@@ -1,0 +1,33 @@
+name: Potat0
+qq: 1806713661
+ip:
+  - 10.18.0.0/16
+  - 192.168.18.0/24
+domain:
+  potat0.dn11:
+    - ns1.potat0.dn11
+ns:
+  ns1.potat0.dn11: 10.18.1.142
+monitor:
+  custom_node: |
+    "itemStyle": {
+        "color": "#FB8C00",
+        "borderColor": {
+            "type": "radial",
+            "x": 0.5,
+            "y": 0.5,
+            "r": 0.5,
+            "colorStops": [
+                {
+                    "offset": 1,
+                    "color": "#E65100"
+                }
+            ]
+        },
+        "borderWidth": 1,
+        "borderCap": "round",
+        "shadowBlur": 10,
+        "shadowColor": "#FFB74D",
+        "shadowOffsetX": 0,
+        "shadowOffsetY": 0
+    }

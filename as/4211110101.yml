@@ -1,0 +1,4 @@
+name: Route Collector
+ip:
+  - 172.16.255.1/32
+comment: Route Collector
