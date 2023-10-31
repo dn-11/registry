@@ -1,0 +1,11 @@
+name: BaiMeow
+qq: 1098105012
+ip:
+  - 172.16.4.0/24
+  - 172.16.14.0/24
+  - 172.16.255.2/32
+domain:
+  baimeow.dn11:
+    - ns1.baimeow.dn11
+ns:
+  ns1.baimeow.dn11: 172.16.7.53
