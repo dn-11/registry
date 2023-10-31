@@ -60,7 +60,7 @@ for asn, data in datas.items():
         normal_ips.append(
             {
                 '归属': data['name'],
-                'QQ': data['qq'],
+                'QQ': data.get('qq', ''),
                 'ASN': asn,
                 '网段': net_172 + net_non172,
                 '备注': data.get('comment', ''),
@@ -70,7 +70,7 @@ for asn, data in datas.items():
         abnormal_ips.append(
             {
                 '归属': data['name'],
-                'QQ': data['qq'],
+                'QQ': data.get('qq', ''),
                 'ASN': asn,
                 '网段': net_non172,
                 '备注': data.get('comment', ''),
@@ -122,7 +122,7 @@ with open('dn11.zone', 'a') as f:
 
 normal_ips = [
     {
-        '归属': escape(i['归属']) + f'<br>{i["QQ"]}',
+        '归属': escape(i['归属']) + (f'<br>{i["QQ"]}' if i["QQ"] else ''),
         'ASN': f"`{i['ASN']}`",
         '网段': '<br>'.join(f'`{str(j)}`' for j in i['网段']),
         '备注': i['备注'],
@@ -131,7 +131,7 @@ normal_ips = [
 ]
 abnormal_ips = [
     {
-        '归属': escape(i['归属']) + f'<br>{i["QQ"]}',
+        '归属': escape(i['归属']) + (f'<br>{i["QQ"]}' if i["QQ"] else ''),
         'ASN': f"`{i['ASN']}`",
         '网段': '<br>'.join(f'`{str(j)}`' for j in i['网段']),
         '备注': i['备注'],
