@@ -7,7 +7,6 @@ jobs:
   generator:
     runs-on: ubuntu-latest
     name: Generator
-    permissions: write-all
     steps:
       - name: Setup Python Environment
         uses: actions/setup-python@main

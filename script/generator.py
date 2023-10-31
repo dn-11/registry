@@ -6,19 +6,28 @@ from html import escape
 
 import requests
 import yaml
-from IPy import IP
+import IPy
 from py_markdown_table.markdown_table import markdown_table
 
+
+def IP(ip):
+    obj = IPy.IP(ip)
+    obj.NoPrefixForSingleIp = None
+    return obj
+
+
 datas = {}
+with open('as/service.yml', 'r', encoding='utf8') as f:
+    service = yaml.load(f, Loader=yaml.Loader)
+service_remain = service.copy()
 for asn in os.listdir('as'):
-    if asn.endswith('.yml') and asn != 'example.yml':
+    if asn.endswith('.yml') and (asn.startswith('421111') or asn.startswith('422008')):
         with open(f'as/{asn}', 'r', encoding='utf8') as f:
             data = yaml.load(f, Loader=yaml.Loader)
             datas[asn[:-4]] = data
 
 normal_ips = []
 abnormal_ips = []
-service_ips = []
 
 try:
     os.makedirs('monitor-metadata')
@@ -47,15 +56,7 @@ for asn, data in datas.items():
     net_non172 = [IP(i) for i in data['ip'] if IP(i) not in IP('172.16.0.0/16')]
     net_172.sort(key=lambda x: x.int())
     net_non172.sort(key=lambda x: x.int())
-    if len(net_172) == 1 and len(net_non172) == 0 and net_172[0] in IP('172.16.255.0/24'):
-        service_ips.append(
-            {
-                '网段': net_172[0],
-                'ASN': asn if asn.startswith('421111') or asn.startswith('422008') else 'Anycast',
-                '用途': data.get('comment', ''),
-            }
-        )
-    elif len(net_172) > 0:
+    if len(net_172) > 0:
         normal_ips.append(
             {
                 '归属': data['name'],
@@ -76,14 +77,15 @@ for asn, data in datas.items():
             }
         )
 
-    if not (asn.startswith('421111') or asn.startswith('422008')):
-        continue
-
+    for i in service_remain:
+        if str(i.get('asn', '')) == asn:
+            data['ip'].append(i['ip'])
+            service_remain.remove(i)
     temp = {'display': data['name'], 'announce': [str(IP(i)) for i in data['ip']]}
     if 'appendix' in data.get('monitor', {}):
         temp['appendix'] = json.loads('{' + data['monitor']['appendix'] + '}')
     if 'custom_node' in data.get('monitor', {}):
-        temp['custom_node'] = json.loads('{' + data['monitor']['custom_node'] + '}')
+        temp['customNode'] = json.loads('{' + data['monitor']['custom_node'] + '}')
     with open(f'monitor-metadata/{asn}.json', 'w') as f:
         json.dump(temp, f, ensure_ascii=False, indent=4)
     for ip in data['ip']:
@@ -102,6 +104,10 @@ for asn, data in datas.items():
                 print(f'{server.ljust(24)}60      IN      A       {address}', file=f)
         if flag:
             print(';', file=f)
+with open('dn11_roa_bird2.conf', 'a') as f:
+    for i in service_remain:
+        if 'asn' in i:
+            print(f'route {str(IP(i["ip"]))} max 32 as {i["asn"]};', file=f)
 with open('dn11.zone', 'a') as f:
     print(
         'dn11                    60      IN      NS      a.root.dn11\n'
@@ -134,11 +140,11 @@ abnormal_ips = [
 ]
 service_ips = [
     {
-        '网段': str(i['网段']),
-        'ASN': f"`{i['ASN']}`",
-        '用途': i['用途'],
+        '网段': str(IPy.IP(i['ip'])),
+        'ASN': f"`{i.get('asn', 'Anycast')}`",
+        '用途': i.get('usage', ''),
     }
-    for i in sorted(service_ips, key=lambda x: x['网段'].int())
+    for i in sorted(service, key=lambda x: IP(x['ip']).int())
 ]
 with open('README.md', 'w', encoding='utf-8') as f:
     print(

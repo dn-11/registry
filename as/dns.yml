@@ -1,4 +1,0 @@
-name: DNS
-ip:
-  - 172.16.255.53/32
-comment: DNS
