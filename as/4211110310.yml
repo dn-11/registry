@@ -1,0 +1,17 @@
+name: syx
+qq: 1843655401
+ip:
+  - 172.16.19.0/24
+  - 192.168.10.0/24
+domain:
+  syx.dn11:
+    - ns1.syx.dn11
+ns:
+  ns1.syx.dn11:  172.16.7.102
+comment: 浙江省金华市
+monitor:
+  custom_node: |
+    "itemStyle": {
+            "color": "#b0e0e6"
+        }
+    }
