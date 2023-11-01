@@ -1,0 +1,14 @@
+name: TypeScript
+qq: 2907618001
+ip:
+  - 172.16.3.0/24
+domain:
+  ts.dn11:
+    - ns1.ts.dn11
+ns:
+  ns1.ts.dn11: 172.16.3.53
+monitor:
+  custom_node: |
+    "itemStyle": {
+            "color": "#138385"
+        }
