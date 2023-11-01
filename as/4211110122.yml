@@ -1,0 +1,10 @@
+name: Mantle
+contact: rong.m.bao@outlook.com
+ip:
+  - 172.16.23.0/24
+comment: 杭电生活区3号楼204
+monitor:
+  custom_node: |
+    "itemStyle": {
+        "color": "#005967"
+    }
