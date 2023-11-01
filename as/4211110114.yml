@@ -1,0 +1,15 @@
+name: syx
+contact: zhihanghong04@gmail.com
+ip:
+  - 172.16.7.0/24
+domain:
+  gs.dn11:
+    - ns1.gs.dn11
+ns:
+  ns1.gs.dn11: 172.16.7.53
+comment: 杭电生活区12号楼（雾）
+monitor:
+  custom_node: |
+    "itemStyle": {
+            "color": "#5e56db"
+        }
