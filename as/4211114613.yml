@@ -1,0 +1,9 @@
+name: Iraze 
+qq: 1686251366
+ip:
+  - 172.16.2.0/24
+domain:
+  iraze.dn11:
+    - ns1.iraze.dn11
+ns:
+  ns1.iraze.dn11: 172.16.2.13
