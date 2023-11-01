@@ -5,4 +5,4 @@ domain:
   woshiluo.dn11:
     - ns1.woshiluo.dn11
 ns:
-  ns1.syx.dn11:  172.16.20.53
+  ns1.woshiluo.dn11:  172.16.20.53
