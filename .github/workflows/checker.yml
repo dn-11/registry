@@ -8,8 +8,7 @@ on:
 jobs:
   checker:
     runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
+    permissions: write-all
     name: PR Checker
     steps:
       - name: Setup Python Environment
