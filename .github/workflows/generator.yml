@@ -1,7 +1,17 @@
+name: Generator
+
 on:
   push:
     branches:
       - main
+    paths:
+      - '.github/workflows/**'
+      - 'as/**'
+      - 'script/**'
+
+concurrency:
+  group: generator
+  cancel-in-progress: true
 
 jobs:
   generator:
@@ -18,6 +28,17 @@ jobs:
         run: |
           pip3 install pyyaml IPy py-markdown-table requests
           python3 script/generator.py
+      - name: Upload Metadata to GitHub
+        run: |
+          cd metadata-repo
+          git init
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+          git add *
+          git commit -m "Sync"
+          git branch -M main
+          git remote add origin https://${{ secrets.GH_TOKEN }}@github.com/hdu-dn11/metadata.git
+          git push --force -u origin main
       - name: Upload Monitor-Metadata to COS
         timeout-minutes: 5
         uses: TencentCloud/cos-action@v1
@@ -29,18 +50,3 @@ jobs:
           local_path: 'monitor-metadata'
           remote_path: 'as'
           clean: true
-      - name: Upload Metadata to GitHub
-        run: |
-          mkdir metadata
-          cd metadata
-          git init
-          git config --global user.email "action@github.com"
-          git config --global user.name "GitHub Action"
-          mv ../dn11_roa_bird2.conf .
-          mv ../dn11.zone .
-          mv ../README.md .
-          git add dn11_roa_bird2.conf dn11.zone README.md
-          git commit -m "Sync"
-          git branch -M main
-          git remote add origin https://${{ secrets.GH_TOKEN }}@github.com/hdu-dn11/metadata.git
-          git push --force -u origin main

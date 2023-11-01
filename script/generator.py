@@ -30,23 +30,27 @@ normal_ips = []
 abnormal_ips = []
 
 try:
+    os.makedirs('metadata-repo')
+except FileExistsError:
+    pass
+try:
     os.makedirs('monitor-metadata')
 except FileExistsError:
     pass
 
-old_zone_serial = requests.get('https://raw.githubusercontent.com/hdu-dn11/metadata/main/dn11.zone').text
-old_zone_serial = next(i for i in old_zone_serial.split('\n') if 'SOA' in i)
+old_zone_text = requests.get('https://raw.githubusercontent.com/hdu-dn11/metadata/main/dn11.zone').text
+old_zone_serial = next(i for i in old_zone_text.split('\n') if 'SOA' in i)
 old_zone_serial = old_zone_serial.split()[6]
 today = datetime.today().strftime('%Y%m%d')
 if old_zone_serial.startswith(today):
     new_zone_serial = str(int(old_zone_serial) + 1)
 else:
     new_zone_serial = today + '01'
-with open('dn11.zone', 'w') as f:
+with open('metadata-repo/dn11.zone', 'w') as f:
     print(
         '$ORIGIN .\n'
         'dn11                    300     IN      SOA     '
-        f'a.root.dn11 hostmaster.dn11 {new_zone_serial} 60 60 604800 60\n'
+        f'a.root.dn11 hostmaster.dn11 {old_zone_serial} 60 60 604800 60\n'
         ';',
         file=f,
     )
@@ -89,26 +93,23 @@ for asn, data in datas.items():
     with open(f'monitor-metadata/{asn}.json', 'w') as f:
         json.dump(temp, f, ensure_ascii=False, indent=4)
     for ip in data['ip']:
-        with open('dn11_roa_bird2.conf', 'a') as f:
+        with open('metadata-repo/dn11_roa_bird2.conf', 'a') as f:
             print(f'route {str(IP(ip))} max 32 as {asn};', file=f)
-    with open('dn11.zone', 'a') as f:
-        flag = False
+    with open('metadata-repo/dn11.zone', 'a') as f:
         if 'domain' in data:
-            flag = True
             for domain, nss in data['domain'].items():
                 for ns in nss:
                     print(f'{domain.ljust(24)}60      IN      NS      {ns}', file=f)
         if 'ns' in data:
-            flag = True
             for server, address in data['ns'].items():
                 print(f'{server.ljust(24)}60      IN      A       {address}', file=f)
-        if flag:
+        if 'domain' in data or 'ns' in data:
             print(';', file=f)
-with open('dn11_roa_bird2.conf', 'a') as f:
+with open('metadata-repo/dn11_roa_bird2.conf', 'a') as f:
     for i in service_remain:
         if 'asn' in i:
             print(f'route {str(IP(i["ip"]))} max 32 as {i["asn"]};', file=f)
-with open('dn11.zone', 'a') as f:
+with open('metadata-repo/dn11.zone', 'a') as f:
     print(
         'dn11                    60      IN      NS      a.root.dn11\n'
         'dn11                    60      IN      NS      i.root.dn11\n'
@@ -119,6 +120,14 @@ with open('dn11.zone', 'a') as f:
         't.root.dn11             60      IN      A       172.16.3.53',
         file=f,
     )
+with open('metadata-repo/dn11.zone', 'r') as f:
+    new_zone_text = f.read()
+if new_zone_text != old_zone_text:
+    new_zone_text = new_zone_text.split('\n')
+    new_zone_text[1] = new_zone_text[1].replace(old_zone_serial, new_zone_serial)
+    new_zone_text = '\n'.join(new_zone_text)
+    with open('metadata-repo/dn11.zone', 'w') as f:
+        f.write(new_zone_text)
 
 normal_ips = [
     {
@@ -146,7 +155,7 @@ service_ips = [
     }
     for i in sorted(service, key=lambda x: IP(x['ip']).int())
 ]
-with open('README.md', 'w', encoding='utf-8') as f:
+with open('metadata-repo/README.md', 'w', encoding='utf-8') as f:
     print(
         '# DN11 信息表\n\n'
         '## 常规段\n\n'
