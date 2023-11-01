@@ -19,6 +19,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@main
         with:
+          token: ${{ secrets.GH_TOKEN }}
           fetch-depth: 0
           ref: ${{github.event.pull_request.head.ref}}
           repository: ${{github.event.pull_request.head.repo.full_name}}
@@ -39,4 +40,5 @@ jobs:
         uses: thollander/actions-comment-pull-request@v2
         if: always()
         with:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           filePath: result.txt
