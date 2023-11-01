@@ -22,9 +22,15 @@ jobs:
           fetch-depth: 0
           ref: ${{github.event.pull_request.head.ref}}
           repository: ${{github.event.pull_request.head.repo.full_name}}
+      - name: Add RAW Remote
+        run: |
+          git remote add raw https://${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }}.git
+          git fetch raw
       - name: Get changed files
         id: changed-files
         uses: tj-actions/changed-files@v40
+        with:
+          base_sha: remotes/raw/main
       - name: Run Checker
         run: |
           pip3 install pyyaml IPy
