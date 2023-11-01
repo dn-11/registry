@@ -4,9 +4,8 @@ import os
 from datetime import datetime
 from html import escape
 
-import requests
-import yaml
 import IPy
+import yaml
 from py_markdown_table.markdown_table import markdown_table
 
 
@@ -38,7 +37,8 @@ try:
 except FileExistsError:
     pass
 
-old_zone_text = requests.get('https://raw.githubusercontent.com/hdu-dn11/metadata/main/dn11.zone').text
+with open('old-metadata/dn11.zone', 'r') as f:
+    old_zone_text = f.read()
 old_zone_serial = next(i for i in old_zone_text.split('\n') if 'SOA' in i)
 old_zone_serial = old_zone_serial.split()[6]
 today = datetime.today().strftime('%Y%m%d')

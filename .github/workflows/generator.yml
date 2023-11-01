@@ -24,6 +24,17 @@ jobs:
           python-version: "3.10"
       - name: Checkout Code
         uses: actions/checkout@main
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+      - name: Get Old Zone File
+        uses: actions/checkout@main
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          repository: hdu-dn11/metadata
+          path: old-metadata
+          sparse-checkout: |
+            dn11.zone
+          sparse-checkout-cone-mode: false
       - name: Run Generator
         run: |
           pip3 install pyyaml IPy py-markdown-table requests
