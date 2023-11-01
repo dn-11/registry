@@ -100,12 +100,27 @@ net172.sort()
 net172_new = set()
 for i in datas[new_file]['ip']:
     ip = IP(i)
-    if ip not in IP('172.16.0.0/16'):
+    reserved = [
+        '10.0.0.0/24',
+        '10.42.0.0/16',
+        '10.43.0.0/16',
+        '172.16.200.0/24',
+        '172.16.254.0/24',
+        '172.26.0.0/16',
+        '172.27.0.0/16',
+        '192.168.1.1/24',
+    ]
+    not_recommended = ['172.16.128.0/24', '172.16.129.0/24']
+    if any(ip in IP(i) for i in reserved):
+        log.error(f'IP `{i}` 为保留地址')
+    elif any(ip in IP(i) for i in not_recommended):
+        log.warning(f'IP `{i}` 为不建议地址')
+    elif ip not in IP('172.16.0.0/16'):
         log.warning(f'IP `{i}` 不在 DN11 常规段内')
-    elif ip not in IP('172.16.255.0/24') and len(ip) != 256:
-        log.error(f'IP `{i}` 不持有一个 /24 段。对常规段的申请必须是 /24 段')
     elif ip in IP('172.16.255.0/24'):
         log.error('服务段请在 `service.yml` 中申请')
+    elif len(ip) != 256:
+        log.error(f'IP `{i}` 不持有一个 /24 段。对常规段的申请必须是 /24 段')
     else:
         net172_new.add(int(str(ip)[:-3].split('.')[2]))
 net172 = set([i for i in range(1, 256) if i not in net172][: len(net172_new)])
