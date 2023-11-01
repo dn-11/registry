@@ -34,6 +34,7 @@ class log:
 
 
 log = log()
+
 os.chdir('as')
 
 if len(sys.argv) > 2:
@@ -55,14 +56,37 @@ for asn in os.listdir():
             data = yaml.load(f, Loader=yaml.Loader)
             datas[asn[:-4]] = data
 flag = False
-for i in ['name', 'ip']:
-    if i not in datas[new_file]:
-        log.error(f'缺少 `{i}` 字段')
+if 'ip' not in datas[new_file]:
+    log.error('缺少 `ip` 字段')
+    flag = True
+elif type(datas[new_file]['ip']) is not list:
+    log.error('`ip` 字段必须为列表')
+    flag = True
+if 'name' not in datas[new_file]:
+    log.error('缺少 `name` 字段')
+    flag = True
+if 'domain' in datas[new_file]:
+    if type(datas[new_file]['domain']) is not dict:
+        log.error('`domain` 字段必须为字典')
         flag = True
+    else:
+        for domain, ns_server in datas[new_file]['domain'].items():
+            if type(ns_server) is not list:
+                log.error(f'域名 `{domain}` 的 NS 服务器设置不为列表')
+                flag = True
+if 'ns' in datas[new_file]:
+    if type(datas[new_file]['ns']) is not dict:
+        log.error('`ns` 字段必须为字典')
+        flag = True
+    else:
+        for ns_server, ip in datas[new_file]['ns'].items():
+            if type(ip) is not str:
+                log.error(f'NS `{ns_server}` 的 IP 不为字符串')
+                flag = True
 if flag:
     log.exit()
-if 'qq' not in datas[new_file]:
-    log.warning('缺少 QQ 号')
+if 'contact' not in datas[new_file]:
+    log.warning('缺少联系方式')
 existed_ip = {}
 existed_domain = {}
 for asn in datas:
@@ -72,10 +96,21 @@ for asn in datas:
     existed_domain.update({i.lower(): asn for i in datas[asn].get('domain', {}).keys()})
 if not all(i.endswith('.dn11') for i in datas[new_file].get('domain', {}).keys()):
     log.error("域名必须以 .dn11 结尾")
-try:
-    [IP(i) for i in datas[new_file]['ip']]
-except ValueError:
-    log.error("IP 格式错误")
+flag = False
+for i in datas[new_file]['ip']:
+    try:
+        IP(i)
+    except ValueError:
+        log.error(f"IP `{i}` 格式错误")
+        flag = True
+for i in datas[new_file].get('ns', {}).values():
+    try:
+        IP(i)
+    except ValueError:
+        log.error(f"NS IP `{i}` 格式错误")
+        flag = True
+if flag:
+    log.exit()
 for ip in datas[new_file]['ip']:
     for eip in existed_ip:
         if IP(ip) in eip:
