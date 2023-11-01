@@ -1,0 +1,9 @@
+name: Meva
+qq: 2476648224
+ip:
+  - 172.16.1.0/24
+domain:
+  meva.dn11:
+    - ns1.meva.dn11
+ns:
+  ns1.meva.dn11: 172.16.7.53
