@@ -1,0 +1,9 @@
+name: woshiluo
+qq: 1552758325
+ip:
+  - 172.16.20.0/24
+domain:
+  woshiluo.dn11:
+    - ns1.woshiluo.dn11
+ns:
+  ns1.woshiluo.dn11:  172.16.20.53
