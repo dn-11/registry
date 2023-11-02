@@ -5,7 +5,6 @@ ip:
 domain:
   daidr.dn11:
     - ns1.daidr.dn11
-    - mc.daidr.dn11
 ns:
   ns1.daidr.dn11: 172.16.33.53
 comment: 杭电生活区11北2楼
