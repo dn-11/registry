@@ -44,7 +44,7 @@ jobs:
           cd metadata-repo
           git init
           git config --global user.name "GitHub Action"
-          git config --global user.email "github-actions@github.com"
+          git config --global user.email "action@github.com"
           git add *
           git commit -m "Sync"
           git branch -M main

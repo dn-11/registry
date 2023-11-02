@@ -5,6 +5,7 @@ import sys
 
 import yaml
 from IPy import IP
+from netaddr import IPSet
 
 
 class log:
@@ -62,6 +63,9 @@ if 'ip' not in datas[new_file]:
 elif type(datas[new_file]['ip']) is not list:
     log.error('`ip` 字段必须为列表')
     flag = True
+elif len(IPSet(datas[new_file]['ip']).iter_cidrs()) != len(datas[new_file]['ip']):
+    log.error('所申请 IP 有重叠')
+    flag = True
 if 'name' not in datas[new_file]:
     log.error('缺少 `name` 字段')
     flag = True
@@ -89,11 +93,13 @@ if 'contact' not in datas[new_file]:
     log.warning('缺少联系方式')
 existed_ip = {}
 existed_domain = {}
+existed_ns = {}
 for asn in datas:
     if asn == new_file:
         continue
     existed_ip.update({IP(i): asn for i in datas[asn]['ip']})
     existed_domain.update({i.lower(): asn for i in datas[asn].get('domain', {}).keys()})
+    existed_ns.update({i.lower(): asn for i in datas[asn].get('ns', {}).keys()})
 if not all(i.endswith('.dn11') for i in datas[new_file].get('domain', {}).keys()):
     log.error("域名必须以 .dn11 结尾")
 flag = False
@@ -127,9 +133,15 @@ for domain in datas[new_file].get('domain', {}):
     dup = [x for x in datas[new_file]['domain'][domain] if x in visited or (visited.add(x) or False)]
     if dup:
         log.error(f'NS `{", ".join(set(dup))}` 重复定义')
-for ns in datas[new_file].get('ns', []):
+for ns in datas[new_file].get('ns', {}).keys():
     if not any(ns.endswith(i) for i in datas[new_file].get('domain', {})):
         log.error(f'NS 仅可由对应域名的持有者定义，您不持有 `{ns}`')
+    else:
+        existed_ns[i.lower()] = new_file
+for ns in datas[new_file].get('domain', {}).values():
+    for i in ns:
+        if i.lower() not in existed_ns:
+            log.error(f'NS `{i}` 未被定义')
 net172 = [int(str(IP(i))[:-3].split('.')[2]) for i in existed_ip if IP(i) in IP('172.16.0.0/16')]
 net172.sort()
 net172_new = set()

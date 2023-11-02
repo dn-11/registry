@@ -33,7 +33,7 @@ jobs:
           base_sha: remotes/raw/main
       - name: Run Checker
         run: |
-          pip3 install pyyaml IPy
+          pip3 install pyyaml IPy netaddr
           python3 script/checker.py ${{steps.changed-files.outputs.all_changed_files}} > result.txt
       - name: Reply to PR
         uses: thollander/actions-comment-pull-request@v2
