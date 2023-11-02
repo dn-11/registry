@@ -50,6 +50,14 @@ if sys.argv[1] == 'service.yml':
     log.exit()
 
 new_file = sys.argv[1][3:-4]
+try:
+    i = int(new_file)
+    if not (4211110000 <= i <= 4211119999 or 4220080000 <= i <= 4220089999):
+        raise ValueError
+except ValueError:
+    log.error('ASN (文件名) 格式错误，必须为 `421111xxxx` 或 `422008xxxx` (Vidar 成员)')
+    log.exit()
+
 datas = {}
 for asn in os.listdir():
     if asn.endswith('.yml') and (asn.startswith('421111') or asn.startswith('422008')):
