@@ -1,0 +1,15 @@
+name: daidr
+contact: daidr@daidr.me
+ip:
+  - 172.16.33.0/24
+domain:
+  daidr.dn11:
+    - ns1.daidr.dn11
+ns:
+  ns1.daidr.dn11: 172.16.33.53
+comment: 杭电生活区11北2楼
+monitor:
+  custom_node: |
+    "itemStyle": {
+            "color": "#b9d571"
+        }
