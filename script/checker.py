@@ -145,7 +145,7 @@ for ns in datas[new_file].get('ns', {}).keys():
     if not any(ns.endswith(i) for i in datas[new_file].get('domain', {})):
         log.error(f'NS 仅可由对应域名的持有者定义，您不持有 `{ns}`')
     else:
-        existed_ns[i.lower()] = new_file
+        existed_ns[ns.lower()] = new_file
 for ns in datas[new_file].get('domain', {}).values():
     for i in ns:
         if i.lower() not in existed_ns:
