@@ -2,6 +2,7 @@
 import json
 import os
 import sys
+from pathlib import Path
 
 import yaml
 from IPy import IP
@@ -33,29 +34,44 @@ class log:
             print('✅ 校验通过')
         exit(0)
 
+    def try_exit(self):
+        if self.has_error:
+            print()
+            print('请修复错误后再提交')
+            exit(1)
+
 
 log = log()
 
-os.chdir('as')
-
 if len(sys.argv) > 2:
     log.error("每次 PR 仅支持修改一个文件")
-    log.exit()
+for arg in sys.argv[1:]:
+    path = Path(arg)
+    if str(path.parent) != 'as':
+        log.error(f"修改了非 as 目录文件: `{arg}`")
+    elif path.suffix != '.yml':
+        log.error(f"文件 `{arg}` 非 yml 格式")
+    elif path.stem == 'example':
+        log.warning("修改了 `example.yml` 文件")
+    elif path.stem == 'service':
+        continue
+    else:
+        try:
+            asn = int(path.stem)
+            if not (4211110000 <= asn <= 4211119999 or 4220080000 <= asn <= 4220089999):
+                raise ValueError
+        except ValueError:
+            log.error(f"文件 `{arg}` ASN 格式错误，必须为 `421111xxxx` 或 `422008xxxx` (Vidar 成员)")
+log.try_exit()
 
-if sys.argv[1] == 'service.yml':
+os.chdir('as')
+new_file = Path(sys.argv[1]).stem
+
+if new_file == 'service':
     with open('service.yml', 'r', encoding='utf8') as f:
         data = yaml.load(f, Loader=yaml.Loader)
     if len(set(i['ip'] for i in data)) != len(data):
         log.error('服务段有重复 IP')
-    log.exit()
-
-new_file = sys.argv[1][3:-4]
-try:
-    i = int(new_file)
-    if not (4211110000 <= i <= 4211119999 or 4220080000 <= i <= 4220089999):
-        raise ValueError
-except ValueError:
-    log.error('ASN (文件名) 格式错误，必须为 `421111xxxx` 或 `422008xxxx` (Vidar 成员)')
     log.exit()
 
 datas = {}
@@ -64,39 +80,30 @@ for asn in os.listdir():
         with open(asn, 'r', encoding='utf8') as f:
             data = yaml.load(f, Loader=yaml.Loader)
             datas[asn[:-4]] = data
-flag = False
 if 'ip' not in datas[new_file]:
     log.error('缺少 `ip` 字段')
-    flag = True
 elif type(datas[new_file]['ip']) is not list:
     log.error('`ip` 字段必须为列表')
-    flag = True
 elif len(IPSet(datas[new_file]['ip']).iter_cidrs()) != len(datas[new_file]['ip']):
     log.error('所申请 IP 有重叠')
-    flag = True
 if 'name' not in datas[new_file]:
     log.error('缺少 `name` 字段')
-    flag = True
 if 'domain' in datas[new_file]:
     if type(datas[new_file]['domain']) is not dict:
         log.error('`domain` 字段必须为字典')
-        flag = True
     else:
         for domain, ns_server in datas[new_file]['domain'].items():
             if type(ns_server) is not list:
                 log.error(f'域名 `{domain}` 的 NS 服务器设置不为列表')
-                flag = True
 if 'ns' in datas[new_file]:
     if type(datas[new_file]['ns']) is not dict:
         log.error('`ns` 字段必须为字典')
-        flag = True
     else:
         for ns_server, ip in datas[new_file]['ns'].items():
             if type(ip) is not str:
                 log.error(f'NS `{ns_server}` 的 IP 不为字符串')
-                flag = True
-if flag:
-    log.exit()
+log.try_exit()
+
 if 'contact' not in datas[new_file]:
     log.warning('缺少联系方式')
 existed_ip = {}
