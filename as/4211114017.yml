@@ -1,0 +1,9 @@
+name: bread
+ip:
+  - 172.16.28.0/24
+comment: 杭电生活区16栋5楼
+monitor:
+  custom_node: |
+    "itemStyle": {
+            "color": "#b9d571"
+        }
