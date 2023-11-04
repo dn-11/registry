@@ -38,6 +38,8 @@ class log:
         if self.has_error:
             print()
             print('请修复错误后再提交')
+            print()
+            print('注意：由于格式错误等原因，配置文件未被完整校验。请修复后重新查看校验结果。')
             exit(1)
 
 
