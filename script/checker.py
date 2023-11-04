@@ -45,7 +45,10 @@ class log:
 
 log = log()
 
-if len(sys.argv) > 2:
+if len(sys.argv) == 1:
+    print('无修改的文件')
+    exit(0)
+elif len(sys.argv) > 2:
     log.error("每次 PR 仅支持修改一个文件")
 for arg in sys.argv[1:]:
     path = Path(arg)
