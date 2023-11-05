@@ -1,0 +1,9 @@
+name: 5-HT
+contact: laysky0817@outlook.com
+ip:
+  - 172.16.34.0/24
+monitor:
+  custom_node: |
+    "itemStyle": {
+            "color": "#66ffcc"
+        }
