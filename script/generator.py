@@ -134,7 +134,7 @@ normal_ips = [
         '归属': escape(i['归属']),
         'ASN': f"`{i['ASN']}`",
         '网段': '<br>'.join(f'`{str(j)}`' for j in i['网段']),
-        '备注': '<br>'.join([str(i['联系方式']), str(i['备注'])]),
+        '备注': '<br>'.join(escape(i) for i in str(i['联系方式']).split('\n') + str(i['备注']).split('\n')),
     }
     for i in sorted(normal_ips, key=lambda x: x['网段'][0].int())
 ]
@@ -143,7 +143,7 @@ abnormal_ips = [
         '归属': escape(i['归属']),
         'ASN': f"`{i['ASN']}`",
         '网段': '<br>'.join(f'`{str(j)}`' for j in i['网段']),
-        '备注': '<br>'.join([str(i['联系方式']), str(i['备注'])]),
+        '备注': '<br>'.join(escape(i) for i in str(i['联系方式']).split('\n') + str(i['备注']).split('\n')),
     }
     for i in sorted(abnormal_ips, key=lambda x: x['网段'][0].int())
 ]

@@ -38,12 +38,17 @@ class log:
         if self.has_error:
             print()
             print('请修复错误后再提交')
+            print()
+            print('注意：由于格式错误等原因，配置文件未被完整校验。请修复后重新查看校验结果。')
             exit(1)
 
 
 log = log()
 
-if len(sys.argv) > 2:
+if len(sys.argv) == 1:
+    print('无修改的文件')
+    exit(0)
+elif len(sys.argv) > 2:
     log.error("每次 PR 仅支持修改一个文件")
 for arg in sys.argv[1:]:
     path = Path(arg)
@@ -88,6 +93,8 @@ elif len(IPSet(datas[new_file]['ip']).iter_cidrs()) != len(datas[new_file]['ip']
     log.error('所申请 IP 有重叠')
 if 'name' not in datas[new_file]:
     log.error('缺少 `name` 字段')
+elif type(datas[new_file]['name']) is not str:
+    log.error('`name` 字段必须为字符串')
 if 'domain' in datas[new_file]:
     if type(datas[new_file]['domain']) is not dict:
         log.error('`domain` 字段必须为字典')
@@ -102,10 +109,24 @@ if 'ns' in datas[new_file]:
         for ns_server, ip in datas[new_file]['ns'].items():
             if type(ip) is not str:
                 log.error(f'NS `{ns_server}` 的 IP 不为字符串')
-log.try_exit()
-
 if 'contact' not in datas[new_file]:
     log.warning('缺少联系方式')
+elif type(datas[new_file]['contact']) is not str:
+    log.error('`contact` 字段必须为字符串')
+if 'comment' in datas[new_file] and type(datas[new_file]['comment']) is not str:
+    log.error('`comment` 字段必须为字符串')
+if 'monitor' in datas[new_file]:
+    if type(datas[new_file]['monitor']) is not dict:
+        log.error('`monitor` 字段必须为字典')
+    elif any(i in datas[new_file]['monitor'] for i in ['appendix', 'custom_node']):
+        if 'appendix' in datas[new_file] and type(datas[new_file]['monitor']['appendix']) is not str:
+            log.error('`monitor` 的 `appendix` 字段必须为字符串')
+        if 'custom_node' in datas[new_file] and type(datas[new_file]['monitor']['custom_node']) is not str:
+            log.error('`monitor` 的 `custom_node` 字段必须为字符串')
+    else:
+        log.error('`monitor` 字段必须至少包含 `appendix` 或 `custom_node`')
+log.try_exit()
+
 existed_ip = {}
 existed_domain = {}
 existed_ns = {}
@@ -117,21 +138,17 @@ for asn in datas:
     existed_ns.update({i.lower(): asn for i in datas[asn].get('ns', {}).keys()})
 if not all(i.endswith('.dn11') for i in datas[new_file].get('domain', {}).keys()):
     log.error("域名必须以 .dn11 结尾")
-flag = False
 for i in datas[new_file]['ip']:
     try:
         IP(i)
     except ValueError:
         log.error(f"IP `{i}` 格式错误")
-        flag = True
 for i in datas[new_file].get('ns', {}).values():
     try:
         IP(i)
     except ValueError:
         log.error(f"NS IP `{i}` 格式错误")
-        flag = True
-if flag:
-    log.exit()
+log.try_exit()
 for ip in datas[new_file]['ip']:
     for eip in existed_ip:
         if IP(ip) in eip:
