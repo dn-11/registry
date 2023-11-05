@@ -14,31 +14,31 @@ monitor:
                 "colorStops": [
                     {
                         "offset": 0,
-                        "color": "#862983"
+                        "color": "#8B0000"
                     },
                     {
                         "offset": 0.25,
-                        "color": "#FF8DA3"
+                        "color": "#DE1A37"
                     },
                     {
                         "offset": 0.5,
-                        "color": "#FFD7CF"
+                        "color": "#FF4500"
                     },
                     {
                         "offset": 0.75,
-                        "color": "#0000FF"
+                        "color": "#FFA500"
                     },
                     {
                         "offset": 1,
-                        "color": "#FFC66E"
+                        "color": "#FFD700"
                     }
                 ]
         },
         "borderWidth": 1,
         "borderCap": "round",
         "shadowBlur": 10,
-        "shadowColor": "#FFB74D",
+        "shadowColor": "#F1E137",
         "shadowOffsetX": 0,
         "shadowOffsetY": 0,
-        "borderColor": "#00FFFF"
+        "borderColor": "#F1E137"
     }
