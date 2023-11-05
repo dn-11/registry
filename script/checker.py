@@ -77,6 +77,13 @@ if new_file == 'service':
         data = yaml.load(f, Loader=yaml.Loader)
     if len(set(i['ip'] for i in data)) != len(data):
         log.error('服务段有重复 IP')
+    for i in data:
+        ip = IP(i['ip'])
+        ip.NoPrefixForSingleIp = None
+        if len(ip) != 1:
+            log.error(f'IP `{str(ip)}` 不为单 IP。对服务段的申请必须是 /32')
+        elif ip not in IP('172.16.255.0/24'):
+            log.error(f'IP `{str(ip)}` 不在服务段 `172.16.255.0/24` 内')
     log.exit()
 
 datas = {}
