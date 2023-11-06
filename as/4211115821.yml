@@ -1,0 +1,16 @@
+name: Ljcbaby
+contact: 46277145+ljcbaby@users.noreply.github.com
+
+ip:
+  - 192.168.3.0/24
+
+comment: |
+  武义电信
+  俄罗斯莫斯科JustHost
+  上海腾讯云
+
+monitor:
+  custom_node: |
+    "itemStyle": {
+            "color": "#ff0000"
+        }

@@ -1,0 +1,12 @@
+name: Atom
+contact: me@homeboyc.cn
+ip:
+  - 172.16.6.0/24
+  - 10.28.0.0/24
+  - 192.168.28.0/24
+  - 192.168.30.0/24
+monitor:
+  custom_node: |
+    "itemStyle": {
+        "color": "#EA7500"
+    }
