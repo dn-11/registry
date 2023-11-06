@@ -11,7 +11,7 @@ ns:
 monitor:
   custom_node: |
     "itemStyle": {
-        "color": "#f5b199"
+        "color": "#f5b199",
         "borderColor": {
             "type": "radial",
             "x": 0.5,
