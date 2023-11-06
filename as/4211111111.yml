@@ -1,0 +1,10 @@
+name: l0tus
+contact: 0xl0tus233@gmail.com
+ip:
+  - 172.16.11.0/24
+comment: l0tus
+monitor:
+  custom_node: |
+    "itemStyle": {
+            "color": "#d120a4"
+        }
