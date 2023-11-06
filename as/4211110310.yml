@@ -12,5 +12,23 @@ comment: 浙江省金华市
 monitor:
   custom_node: |
     "itemStyle": {
-            "color": "#b0e0e6"
+            "color": "#87cefa",
+            "borderColor": {
+            "type": "radial",
+            "x": 0.5,
+            "y": 0.5,
+            "r": 0.5,
+            "colorStops": [
+                {
+                    "offset": 1,
+                    "color": "#87cefa"
+                }
+            ]
+        },
+        "borderWidth": 1,
+        "borderCap": "round",
+        "shadowBlur": 10,
+        "shadowColor": "#87ceeb",
+        "shadowOffsetX": 0,
+        "shadowOffsetY": 0
         }
