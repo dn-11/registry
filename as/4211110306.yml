@@ -1,0 +1,28 @@
+name: hluvmiku
+contact: hluvmiku@gmail.com
+ip:
+  - 172.16.36.0/24
+comment: HDU-10-306
+monitor:
+  custom_node: |
+    "itemStyle": {
+            "color": "##FFC0CB",
+            "borderColor": {
+            "type": "radial",
+            "x": 0.5,
+            "y": 0.5,
+            "r": 0.5,
+            "colorStops": [
+                {
+                    "offset": 1,
+                    "color": "#FFC0CB"
+                }
+            ]
+        },
+        "borderWidth": 1,
+        "borderCap": "round",
+        "shadowBlur": 10,
+        "shadowColor": "#FFC0CB",
+        "shadowOffsetX": 0,
+        "shadowOffsetY": 0
+        }
