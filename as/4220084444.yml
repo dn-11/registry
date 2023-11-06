@@ -8,3 +8,8 @@ domain:
     - ns1.baimeow.dn11
 ns:
   ns1.baimeow.dn11: 172.16.7.53
+monitor:
+  custom_node: |
+    "itemStyle": {
+        "color": "#f5b199"
+    }
