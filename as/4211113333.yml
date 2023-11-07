@@ -1,7 +1,7 @@
 name: srt
 contact: admin@srt.gay
 ip:
-  - 10.25.8.93/24
+  - 10.25.8.93/32
 monitor:
   custom_node: |
     "itemStyle": {
