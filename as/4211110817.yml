@@ -5,7 +5,7 @@ ip:
 monitor:
   custom_node: |
     "itemStyle": {
-            "color": "#66ffcc",
+            "color": "#ffb6c1",
             "borderColor": {
             "type": "radial",
             "x": 0.5,
@@ -14,14 +14,14 @@ monitor:
             "colorStops": [
                 {
                     "offset": 1,
-                    "color": "#66ffcc"
+                    "color": "#ffb6c1"
                 }
             ]
         },
         "borderWidth": 1,
         "borderCap": "round",
         "shadowBlur": 10,
-        "shadowColor": "#40e0d0",
+        "shadowColor": "#f7dde1",
         "shadowOffsetX": 0,
         "shadowOffsetY": 0
         }
