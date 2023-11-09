@@ -1,7 +1,7 @@
 name: setcy
 contact: "asetcy@gmail.com"
 ip:
-  - 172.16.37.0/24
+  - 172.16.0.0/24
 monitor:
   custom_node: |
     "itemStyle": {
