@@ -55,6 +55,14 @@ with open('metadata-repo/dn11.zone', 'w') as f:
         file=f,
     )
 
+roa = {
+    "metadata": {
+        "counts": 0,
+        "generated": int(datetime.now().timestamp()),
+        "valid": 0,
+    },
+    "roas": [],
+}
 for asn, data in datas.items():
     net_172 = [IP(i) for i in data['ip'] if IP(i) in IP('172.16.0.0/16')]
     net_non172 = [IP(i) for i in data['ip'] if IP(i) not in IP('172.16.0.0/16')]
@@ -93,6 +101,9 @@ for asn, data in datas.items():
     with open(f'monitor-metadata/{asn}.json', 'w') as f:
         json.dump(temp, f, ensure_ascii=False, indent=4)
     for ip in data['ip']:
+        roa['roas'].append({'prefix': str(IP(ip)), 'maxLength': 32, 'asn': f'AS{asn}'})
+        roa['metadata']['counts'] += 1
+        roa['metadata']['valid'] += len(IP(ip))
         with open('metadata-repo/dn11_roa_bird2.conf', 'a') as f:
             print(f'route {str(IP(ip))} max 32 as {asn};', file=f)
     with open('metadata-repo/dn11.zone', 'a') as f:
@@ -106,9 +117,13 @@ for asn, data in datas.items():
         if 'domain' in data or 'ns' in data:
             print(';', file=f)
 with open('metadata-repo/dn11_roa_bird2.conf', 'a') as f:
-    for i in service_remain:
-        if 'asn' in i:
-            print(f'route {str(IP(i["ip"]))} max 32 as {i["asn"]};', file=f)
+    for s in (i for i in service_remain if 'asn' in i):
+        roa['roas'].append({'prefix': str(IP(s["ip"])), 'maxLength': 32, 'asn': f'AS{s["asn"]}'})
+        roa['metadata']['counts'] += 1
+        roa['metadata']['valid'] += len(IP(s["ip"]))
+        print(f'route {str(IP(s["ip"]))} max 32 as {s["asn"]};', file=f)
+with open('metadata-repo/dn11_roa_gortr.conf', 'w') as f:
+    json.dump(roa, f, ensure_ascii=True, separators=(',', ':'))
 with open('metadata-repo/dn11.zone', 'a') as f:
     print(
         'dn11                    60      IN      NS      a.root.dn11\n'
