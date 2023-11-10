@@ -122,7 +122,7 @@ with open('metadata-repo/dn11_roa_bird2.conf', 'a') as f:
         roa['metadata']['counts'] += 1
         roa['metadata']['valid'] += len(IP(s["ip"]))
         print(f'route {str(IP(s["ip"]))} max 32 as {s["asn"]};', file=f)
-with open('metadata-repo/dn11_roa_gortr.conf', 'w') as f:
+with open('metadata-repo/dn11_roa_gortr.json', 'w') as f:
     json.dump(roa, f, ensure_ascii=True, separators=(',', ':'))
 with open('metadata-repo/dn11.zone', 'a') as f:
     print(

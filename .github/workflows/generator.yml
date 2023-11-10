@@ -80,6 +80,6 @@ jobs:
           secret_key: ${{ secrets.TENCENT_CLOUD_SECRET_KEY }}
           cos_bucket: ${{ secrets.COS_BUCKET }}
           cos_region: ${{ secrets.COS_REGION }}
-          local_path: 'metadata-repo/dn11_roa_gortr.conf'
-          remote_path: 'dn11_roa_gortr.conf'
+          local_path: 'metadata-repo/dn11_roa_gortr.json'
+          remote_path: 'dn11_roa_gortr.json'
           clean: false
