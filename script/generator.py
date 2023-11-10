@@ -118,7 +118,7 @@ with open('metadata-repo/dn11.zone', 'a') as f:
         ';\n'
         'a.root.dn11             60      IN      A       172.16.7.53\n'
         'i.root.dn11             60      IN      A       172.16.2.13\n'
-        't.root.dn11             60      IN      A       172.16.3.53\n',
+        't.root.dn11             60      IN      A       172.16.3.53\n'
         'h.root.dn11             60      IN      A       100.64.0.1',
         file=f,
     )
