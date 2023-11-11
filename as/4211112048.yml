@@ -1,0 +1,27 @@
+name: fltbk
+contact: fltbk@outlook.com
+ip:
+  - 172.16.32.0/24
+monitor:
+  custom_node: |
+    "itemStyle": {
+            "color": "#cb4042",
+            "borderColor": {
+            "type": "radial",
+            "x": 0.5,
+            "y": 0.5,
+            "r": 0.5,
+            "colorStops": [
+                {
+                    "offset": 1,
+                    "color": "#cb4042"
+                }
+            ]
+        },
+        "borderWidth": 1,
+        "borderCap": "round",
+        "shadowBlur": 10,
+        "shadowColor": "#f19483",
+        "shadowOffsetX": 0,
+        "shadowOffsetY": 0
+        }
