@@ -6,6 +6,8 @@ ip:
 domain:
   baimeow.dn11:
     - ns1.baimeow.dn11
+  acme.dn11:
+    - ns1.potat0.dn11
 ns:
   ns1.baimeow.dn11: 172.16.7.53
 monitor:

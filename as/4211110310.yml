@@ -6,6 +6,8 @@ ip:
 domain:
   syx.dn11:
     - ns1.syx.dn11
+  uptime.dn11:
+    - ns1.potat0.dn11
 ns:
   ns1.syx.dn11: 172.16.7.102
 comment: 浙江省金华市
