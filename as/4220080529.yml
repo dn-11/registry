@@ -2,3 +2,63 @@ name: 简
 contact: littlejian0529@gmail.com
 ip:
   - 172.16.11.0/24
+monitor:
+  custom_node: |
+    "itemStyle": {
+        "color": {
+            "type": "linear",
+            "x": 0,
+            "y": 0,
+            "x2": 0,
+            "y2": 1,
+            "colorStops": [
+                {
+                    "offset": 0,
+                    "color": "#7ACBF5"
+                },
+                {
+                    "offset": 0.19,
+                    "color": "#7ACBF5"
+                },
+                {
+                    "offset": 0.2,
+                    "color": "#EAACB8"
+                },
+                {
+                    "offset": 0.39,
+                    "color": "#EAACB8"
+                },
+                {
+                    "offset": 0.4,
+                    "color": "#FFFFFF"
+                },
+                {
+                    "offset": 0.59,
+                    "color": "#FFFFFF"
+                },
+                {
+                    "offset": 0.6,
+                    "color": "#EAACB8"
+                },
+                {
+                    "offset": 0.79,
+                    "color": "#EAACB8"
+                },
+                {
+                    "offset": 0.8,
+                    "color": "#7ACBF5"
+                },
+                {
+                    "offset": 1,
+                    "color": "#7ACBF5"
+                }
+            ]
+        },
+        "borderWidth": 1,
+        "borderCap": "round",
+        "shadowBlur": 10,
+        "shadowColor": "#FFFFFF",
+        "shadowOffsetX": 0,
+        "shadowOffsetY": 0,
+        "borderColor": "#FFFFFF"
+    }
