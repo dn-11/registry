@@ -1,0 +1,42 @@
+name: setcy
+contact: "asetcy@gmail.com"
+ip:
+  - 172.16.37.0/24
+monitor:
+  custom_node: |
+        "itemStyle": {
+            "color": {
+                "type": "radial",
+                "x": 0.5,
+                "y": 0.5,
+                "r": 0.5,
+                "colorStops": [
+                    {
+                        "offset": 0.3,
+                        "color": "rgba(0, 255, 0, 1)"
+                    },
+                    {
+                        "offset": 1,
+                        "color": "rgba(0, 255, 0, 0)"
+                    }
+                ]
+            },
+            "borderColor": {
+                "type": "radial",
+                "x": 0.5,
+                "y": 0.5,
+                "r": 0.5,
+                "colorStops": [
+                    {
+                        "offset": 1,
+                        "color": "rgba(0, 255, 0, 0)"
+                    }
+                ]
+            },
+        "borderWidth": 1,
+        "borderCap": "round",
+        "shadowBlur": 50,
+        "shadowColor": "rgba(0, 255, 0, 1)",
+        "shadowOffsetX": 0,
+        "shadowOffsetY": 0
+        }

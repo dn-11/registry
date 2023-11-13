@@ -55,6 +55,14 @@ with open('metadata-repo/dn11.zone', 'w') as f:
         file=f,
     )
 
+roa = {
+    "metadata": {
+        "counts": 0,
+        "generated": int(datetime.now().timestamp()),
+        "valid": 0,
+    },
+    "roas": [],
+}
 for asn, data in datas.items():
     net_172 = [IP(i) for i in data['ip'] if IP(i) in IP('172.16.0.0/16')]
     net_non172 = [IP(i) for i in data['ip'] if IP(i) not in IP('172.16.0.0/16')]
@@ -70,13 +78,13 @@ for asn, data in datas.items():
                 '备注': data.get('comment', ''),
             }
         )
-    else:
+    if len(net_non172) > 0:
         abnormal_ips.append(
             {
                 '归属': data['name'],
                 '联系方式': data.get('contact', ''),
                 'ASN': asn,
-                '网段': net_non172,
+                '网段': net_non172 + net_172,
                 '备注': data.get('comment', ''),
             }
         )
@@ -93,6 +101,9 @@ for asn, data in datas.items():
     with open(f'monitor-metadata/{asn}.json', 'w') as f:
         json.dump(temp, f, ensure_ascii=False, indent=4)
     for ip in data['ip']:
+        roa['roas'].append({'prefix': str(IP(ip)), 'maxLength': 32, 'asn': f'AS{asn}'})
+        roa['metadata']['counts'] += 1
+        roa['metadata']['valid'] += len(IP(ip))
         with open('metadata-repo/dn11_roa_bird2.conf', 'a') as f:
             print(f'route {str(IP(ip))} max 32 as {asn};', file=f)
     with open('metadata-repo/dn11.zone', 'a') as f:
@@ -106,18 +117,24 @@ for asn, data in datas.items():
         if 'domain' in data or 'ns' in data:
             print(';', file=f)
 with open('metadata-repo/dn11_roa_bird2.conf', 'a') as f:
-    for i in service_remain:
-        if 'asn' in i:
-            print(f'route {str(IP(i["ip"]))} max 32 as {i["asn"]};', file=f)
+    for s in (i for i in service_remain if 'asn' in i):
+        roa['roas'].append({'prefix': str(IP(s["ip"])), 'maxLength': 32, 'asn': f'AS{s["asn"]}'})
+        roa['metadata']['counts'] += 1
+        roa['metadata']['valid'] += len(IP(s["ip"]))
+        print(f'route {str(IP(s["ip"]))} max 32 as {s["asn"]};', file=f)
+with open('metadata-repo/dn11_roa_gortr.json', 'w') as f:
+    json.dump(roa, f, ensure_ascii=True, separators=(',', ':'))
 with open('metadata-repo/dn11.zone', 'a') as f:
     print(
         'dn11                    60      IN      NS      a.root.dn11\n'
         'dn11                    60      IN      NS      i.root.dn11\n'
         'dn11                    60      IN      NS      t.root.dn11\n'
+        'dn11                    60      IN      NS      h.root.dn11\n'
         ';\n'
         'a.root.dn11             60      IN      A       172.16.7.53\n'
         'i.root.dn11             60      IN      A       172.16.2.13\n'
-        't.root.dn11             60      IN      A       172.16.3.53',
+        't.root.dn11             60      IN      A       172.16.3.53\n'
+        'h.root.dn11             60      IN      A       100.64.0.1',
         file=f,
     )
 with open('metadata-repo/dn11.zone', 'r') as f:
@@ -171,7 +188,7 @@ with open('metadata-repo/README.md', 'w', encoding='utf-8') as f:
         print('|:-:|:-:|---|---|', file=f)
         print(md_text[2], file=f)
     print(
-        '\n' '## 使用非标段的成员\n\n' '使用非标段的成员如下表。\n\n' '新成员不得直接使用自己的非标段，请先在群内讨论。确有需要后再在此处填写相关信息。\n\n' '（下表按网段顺序排列）\n',
+        '\n' '## 使用非标段的成员\n\n' '使用非标段的成员如下表。\n\n' '新成员不得直接使用自己的非标段，请先在群内讨论。确有需要后再进行申请。\n\n' '（下表按网段顺序排列）\n',
         file=f,
     )
     if abnormal_ips:
@@ -196,7 +213,7 @@ with open('metadata-repo/README.md', 'w', encoding='utf-8') as f:
         '| --- | --- |\n'
         '| `172.16.0.0/16` | DN11 常规成员段 |\n'
         '| `172.16.255.0/24` | 公共服务段 |\n'
-        '| `10.0.0.0/24` `10.42.0.0/16`<br>`10.43.0.0/16` `172.16.200.0/24`<br>`172.16.254.0/24` `172.26.0.0/16`<br>`172.27.0.0/16` `192.168.1.0/24` | 保留段  |\n'
+        '| `10.0.0.0/24` `10.42.0.0/16`<br>`10.43.0.0/16` `172.16.0.0/24`<br>`172.16.200.0/24` `172.16.254.0/24`<br>`172.26.0.0/16` `172.27.0.0/16`<br>`192.168.1.0/24` | 保留段  |\n'
         '| `172.16.128.0/24`<br>`172.16.129.0/24` | 不建议 |\n',
         file=f,
     )

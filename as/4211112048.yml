@@ -1,20 +1,11 @@
-name: syx
-contact: si@siyx.net
+name: fltbk
+contact: fltbk@outlook.com
 ip:
-  - 172.16.19.0/24
-  - 192.168.10.0/24
-domain:
-  syx.dn11:
-    - ns1.syx.dn11
-  uptime.dn11:
-    - ns1.potat0.dn11
-ns:
-  ns1.syx.dn11: 172.16.7.102
-comment: 浙江省金华市
+  - 172.16.32.0/24
 monitor:
   custom_node: |
     "itemStyle": {
-            "color": "#87cefa",
+            "color": "#cb4042",
             "borderColor": {
             "type": "radial",
             "x": 0.5,
@@ -23,14 +14,14 @@ monitor:
             "colorStops": [
                 {
                     "offset": 1,
-                    "color": "#87cefa"
+                    "color": "#cb4042"
                 }
             ]
         },
         "borderWidth": 1,
         "borderCap": "round",
         "shadowBlur": 10,
-        "shadowColor": "#87ceeb",
+        "shadowColor": "#f19483",
         "shadowOffsetX": 0,
         "shadowOffsetY": 0
         }

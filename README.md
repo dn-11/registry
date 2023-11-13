@@ -18,7 +18,9 @@
 
 - Monitor ([主站](https://status.dn11.top/) / [备站](https://monitor.dn11.baimeow.cn/))
 - 信息表 ([GitHub](https://github.com/hdu-dn11/metadata/blob/main/README.md))
-- ROA ([GitHub](https://raw.githubusercontent.com/hdu-dn11/metadata/main/dn11_roa_bird2.conf) / [Tencent COS](https://metadata.dn11.baimeow.cn/dn11_roa_bird2.conf))
+- ROA
+  - Bird2 风格 ([GitHub](https://raw.githubusercontent.com/hdu-dn11/metadata/main/dn11_roa_bird2.conf) / [Tencent COS](https://metadata.dn11.baimeow.cn/dn11_roa_bird2.conf))
+  - GoRTR 风格 ([GitHub](https://raw.githubusercontent.com/hdu-dn11/metadata/main/dn11_roa_gortr.json) / [Tencent COS](https://metadata.dn11.baimeow.cn/dn11_roa_gortr.json))
 - Zone 文件 ([GitHub](https://raw.githubusercontent.com/hdu-dn11/metadata/main/dn11.zone))
 
 ## How
