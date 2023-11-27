@@ -7,7 +7,7 @@ domain:
   potat0.dn11:
     - ns1.potat0.dn11
 ns:
-  ns1.potat0.dn11: 10.18.1.142
+  ns1.potat0.dn11: 10.18.1.153
 monitor:
   custom_node: |
     "itemStyle": {
