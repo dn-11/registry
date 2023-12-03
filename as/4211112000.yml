@@ -1,0 +1,10 @@
+name: hewo
+contact: hewo7f@gmail.com
+ip:
+  - 172.16.17.0/24
+comment: 杭电生活区16号楼
+monitor:
+  custom_node: |
+    "itemStyle": {
+            "color": "#34e1eb"
+        }
