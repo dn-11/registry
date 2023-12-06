@@ -1,0 +1,7 @@
+name: Klrin
+contact: "klrin.wu@juanji.tech"
+ip:
+  - 172.16.24.0/24
+domain:
+  klrin.dn11:
+    - ns1.meva.dn11
