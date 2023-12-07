@@ -50,40 +50,49 @@ if len(sys.argv) == 1:
     exit(0)
 elif len(sys.argv) > 2:
     log.error("每次 PR 仅支持修改一个文件")
-for arg in sys.argv[1:]:
-    path = Path(arg)
-    if str(path.parent) != 'as':
-        log.error(f"修改了非 as 目录文件: `{arg}`")
-    elif path.suffix != '.yml':
-        log.error(f"文件 `{arg}` 非 yml 格式")
-    elif path.stem == 'example':
-        log.warning("修改了 `example.yml` 文件")
-    elif path.stem == 'service':
-        continue
-    else:
-        try:
-            asn = int(path.stem)
-            if not (4211110000 <= asn <= 4211119999 or 4220080000 <= asn <= 4220089999):
-                raise ValueError
-        except ValueError:
-            log.error(f"文件 `{arg}` ASN 格式错误，必须为 `421111xxxx` 或 `422008xxxx` (Vidar 成员)")
+
+new_file = sys.argv[1]
+path = Path(new_file)
+
+if str(path.parent) != 'as':
+    log.error(f"修改了非 as 目录文件: `{new_file}`")
+elif path.suffix != '.yml':
+    log.error(f"文件 `{new_file}` 非 yml 格式")
+elif path.stem == 'example':
+    log.warning("修改了 `example.yml` 文件")
+elif path.stem != 'service':
+    try:
+        asn = int(path.stem)
+        if not (4211110000 <= asn <= 4211119999 or 4220080000 <= asn <= 4220089999):
+            raise ValueError
+        elif asn == 4211111111:
+            log.warning('不建议申请 `AS4211111111`，该 ASN 容易造成输入和识别困难')
+        elif asn == 4211110101:
+            log.error('`AS4211110101` 已被 Route Collector 服务占用')
+    except ValueError:
+        log.error(f"文件 `{new_file}` ASN 格式错误，必须为 `421111xxxx` 或 `422008xxxx` (Vidar 成员)")
 log.try_exit()
 
 os.chdir('as')
-new_file = Path(sys.argv[1]).stem
+new_file = path.stem
 
 if new_file == 'service':
     with open('service.yml', 'r', encoding='utf8') as f:
         data = yaml.load(f, Loader=yaml.Loader)
-    if len(set(i['ip'] for i in data)) != len(data):
-        log.error('服务段有重复 IP')
     for i in data:
-        ip = IP(i['ip'])
-        ip.NoPrefixForSingleIp = None
-        if len(ip) != 1:
-            log.error(f'IP `{str(ip)}` 不为单 IP。对服务段的申请必须是 /32')
-        elif ip not in IP('172.16.255.0/24'):
-            log.error(f'IP `{str(ip)}` 不在服务段 `172.16.255.0/24` 内')
+        try:
+            ip = IP(i['ip'])
+            ip.NoPrefixForSingleIp = None
+            if len(ip) != 1:
+                log.error(f'IP `{str(ip)}` 不为单 IP。对服务段的申请必须是 /32')
+            elif ip not in IP('172.16.255.0/24'):
+                log.error(f'IP `{str(ip)}` 不在服务段 `172.16.255.0/24` 内')
+        except (ValueError, KeyError):
+            log.error('缺少 `ip` 字段或格式错误')
+    if len(set(i['ip'] for i in data if 'ip' in i)) != len(list(i for i in data if 'ip' in i)):
+        log.error('服务段有重复 IP')
+    if any('usage' not in i for i in data):
+        log.error('缺少 `usage` 字段')
     log.exit()
 
 datas = {}
@@ -214,7 +223,7 @@ net172 = set([i for i in range(1, 256) if i not in net172][: len(net172_new)])
 if net172_new != net172:
     extra = [f'172.16.{i}.0/24' for i in net172_new - net172]
     want = [f'172.16.{i}.0/24' for i in net172 - net172_new]
-    log.warning(f'对于申请的 `{", ".join(extra)}`，建议改为申请 `{", ".join(want)}`')
+    log.warning(f'对于申请的 `{", ".join(sorted(extra))}`，建议改为申请 `{", ".join(sorted(want))}`')
 if 'appendix' in datas[new_file].get('monitor', {}):
     try:
         json.loads('{' + datas[new_file]['monitor']['appendix'] + '}')
