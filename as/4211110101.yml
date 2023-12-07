@@ -1,0 +1,9 @@
+name: Klrin
+contact: "klrin.wu@juanji.tech"
+ip:
+  - 172.16.24.0/24
+monitor:
+  custom_node: |
+    "itemStyle": {
+        "color": "#88c796"
+    }
