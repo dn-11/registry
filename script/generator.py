@@ -37,6 +37,15 @@ try:
 except FileExistsError:
     pass
 
+roa = {
+    "metadata": {
+        "counts": 0,
+        "generated": int(datetime.now().timestamp()),
+        "valid": 0,
+    },
+    "roas": [],
+}
+
 with open('old-metadata/dn11.zone', 'r') as f:
     old_zone_text = f.read()
 old_zone_serial = next(i for i in old_zone_text.split('\n') if 'SOA' in i)
@@ -54,15 +63,52 @@ with open('metadata-repo/dn11.zone', 'w') as f:
         ';',
         file=f,
     )
+with open('metadata-repo/dn11_roa_bird2.conf', 'w') as f:
+    for ip in [
+        IP('0.0.0.0/5'),
+        IP('8.0.0.0/7'),
+        IP('11.0.0.0/8'),
+        IP('12.0.0.0/6'),
+        IP('16.0.0.0/4'),
+        IP('32.0.0.0/3'),
+        IP('64.0.0.0/3'),
+        IP('96.0.0.0/6'),
+        IP('100.0.0.0/10'),
+        IP('100.128.0.0/9'),
+        IP('101.0.0.0/8'),
+        IP('102.0.0.0/7'),
+        IP('104.0.0.0/5'),
+        IP('112.0.0.0/4'),
+        IP('128.0.0.0/3'),
+        IP('160.0.0.0/5'),
+        IP('168.0.0.0/6'),
+        IP('172.0.0.0/12'),
+        IP('172.32.0.0/11'),
+        IP('172.64.0.0/10'),
+        IP('172.128.0.0/9'),
+        IP('173.0.0.0/8'),
+        IP('174.0.0.0/7'),
+        IP('176.0.0.0/4'),
+        IP('192.0.0.0/9'),
+        IP('192.128.0.0/11'),
+        IP('192.160.0.0/13'),
+        IP('192.169.0.0/16'),
+        IP('192.170.0.0/15'),
+        IP('192.172.0.0/14'),
+        IP('192.176.0.0/12'),
+        IP('192.192.0.0/10'),
+        IP('193.0.0.0/8'),
+        IP('194.0.0.0/7'),
+        IP('196.0.0.0/6'),
+        IP('200.0.0.0/5'),
+        IP('208.0.0.0/4'),
+        IP('224.0.0.0/3'),
+    ]:
+        print(f'route {str(ip)} max 32 as 4200000000;', file=f)
+        roa['roas'].append({'prefix': str(ip), 'maxLength': 32, 'asn': 'AS4200000000'})
+        roa['metadata']['counts'] += 1
+        roa['metadata']['valid'] += len(ip)
 
-roa = {
-    "metadata": {
-        "counts": 0,
-        "generated": int(datetime.now().timestamp()),
-        "valid": 0,
-    },
-    "roas": [],
-}
 for asn, data in datas.items():
     net_172 = [IP(i) for i in data['ip'] if IP(i) in IP('172.16.0.0/16')]
     net_non172 = [IP(i) for i in data['ip'] if IP(i) not in IP('172.16.0.0/16')]
