@@ -25,6 +25,17 @@ for asn in os.listdir('as'):
             data = yaml.load(f, Loader=yaml.Loader)
             datas[asn[:-4]] = data
 
+reserved = [
+    IP('10.0.0.0/24'),
+    IP('10.42.0.0/16'),
+    IP('10.43.0.0/16'),
+    IP('172.16.0.0/24'),
+    IP('172.16.200.0/24'),
+    IP('172.16.254.0/24'),
+    IP('172.26.0.0/16'),
+    IP('172.27.0.0/16'),
+    IP('192.168.1.0/24'),
+]
 normal_ips = []
 abnormal_ips = []
 
@@ -64,7 +75,7 @@ with open('metadata-repo/dn11.zone', 'w') as f:
         file=f,
     )
 with open('metadata-repo/dn11_roa_bird2.conf', 'w') as f:
-    for ip in [
+    for ip in reserved + [
         IP('0.0.0.0/5'),
         IP('8.0.0.0/7'),
         IP('11.0.0.0/8'),
@@ -253,13 +264,20 @@ with open('metadata-repo/README.md', 'w', encoding='utf-8') as f:
         print(md_text[0], file=f)
         print('|---|:-:|---|', file=f)
         print(md_text[2], file=f)
+    reserved_str = ''
+    for index, ip in enumerate(str(i) for i in reserved):
+        reserved_str += f'`{ip}`'
+        if index % 2 == 1:
+            reserved_str += '<br>'
+        else:
+            reserved_str += ' '
     print(
         '\n## 特殊段说明\n\n'
         '| 网段 | 说明 |\n'
         '| --- | --- |\n'
         '| `172.16.0.0/16` | DN11 常规成员段 |\n'
         '| `172.16.255.0/24` | 公共服务段 |\n'
-        '| `10.0.0.0/24` `10.42.0.0/16`<br>`10.43.0.0/16` `172.16.0.0/24`<br>`172.16.200.0/24` `172.16.254.0/24`<br>`172.26.0.0/16` `172.27.0.0/16`<br>`192.168.1.0/24` | 保留段  |\n'
+        f'| {reserved_str.strip()} | 保留段  |\n'
         '| `172.16.128.0/24`<br>`172.16.129.0/24` | 不建议 |\n',
         file=f,
     )
