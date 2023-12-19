@@ -172,7 +172,9 @@ for ip in datas[new_file]['ip']:
         elif eip in IP(ip):
             log.error(f"IP `{ip}` 与 `{existed_ip[eip]}` 持有的 `{eip}` 重叠")
 for domain in datas[new_file].get('domain', {}):
-    if domain.lower() in existed_domain:
+    if domain.lower() == 'root.dn11':
+        log.error("域名 `root.dn11` 为保留域名")
+    elif domain.lower() in existed_domain:
         log.error(f"域名 `{domain}` 已被 `{existed_domain[domain.lower()]}` 持有")
     if not datas[new_file]['domain'][domain]:
         log.error(f"域名 `{domain}` 未指定 NS")
