@@ -8,6 +8,15 @@ import IPy
 import yaml
 from py_markdown_table.markdown_table import markdown_table
 
+dns_root_server = {
+    'a': '172.16.7.53',  # GoldenSheep
+    'b': '172.16.4.6',  # BaiMeow
+    'h': '100.64.0.1',  # Hakuya
+    'i': '172.16.2.13',  # Iraze
+    'p': '10.18.1.154',  # Potat0
+    't': '172.16.3.53',  # TypeScript
+}
+
 
 def IP(ip):
     obj = IPy.IP(ip)
@@ -182,22 +191,11 @@ with open('metadata-repo/dn11_roa_bird2.conf', 'a') as f:
 with open('metadata-repo/dn11_roa_gortr.json', 'w') as f:
     json.dump(roa, f, ensure_ascii=True, separators=(',', ':'))
 with open('metadata-repo/dn11.zone', 'a') as f:
-    print(
-        'dn11                    60      IN      NS      a.root.dn11\n'
-        'dn11                    60      IN      NS      b.root.dn11\n'
-        'dn11                    60      IN      NS      i.root.dn11\n'
-        'dn11                    60      IN      NS      p.root.dn11\n'
-        'dn11                    60      IN      NS      t.root.dn11\n'
-        'dn11                    60      IN      NS      h.root.dn11\n'
-        ';\n'
-        'a.root.dn11             60      IN      A       172.16.7.53\n'
-        'b.root.dn11             60      IN      A       172.16.4.6\n'
-        'i.root.dn11             60      IN      A       172.16.2.13\n'
-        'p.root.dn11             60      IN      A       10.18.1.154\n'
-        't.root.dn11             60      IN      A       172.16.3.53\n'
-        'h.root.dn11             60      IN      A       100.64.0.1',
-        file=f,
-    )
+    for server in dns_root_server.keys():
+        print(f'dn11                    60      IN      NS      {server}.root.dn11', file=f)
+    print(';', file=f)
+    for server, address in dns_root_server.items():
+        print(f'{server}.root.dn11 {" " * (13 - len(server))}60      IN      A       {address}', file=f)
 with open('metadata-repo/dn11.zone', 'r') as f:
     new_zone_text = f.read()
 if new_zone_text != old_zone_text:
