@@ -47,6 +47,7 @@ reserved = [
 ]
 normal_ips = []
 abnormal_ips = []
+net172_existed = set()
 
 try:
     os.makedirs('metadata-repo')
@@ -144,6 +145,7 @@ for asn, data in datas.items():
                 '备注': data.get('comment', ''),
             }
         )
+        net172_existed.update(int(str(ip)[:-3].split('.')[2]) for ip in net_172)
     if len(net_non172) > 0:
         abnormal_ips.append(
             {
@@ -231,12 +233,14 @@ service_ips = [
     }
     for i in sorted(service, key=lambda x: IP(x['ip']).int())
 ]
+next_net172 = next(i for i in range(1, 256) if i not in net172_existed)
 with open('metadata-repo/README.md', 'w', encoding='utf-8') as f:
     print(
         '# DN11 信息表\n\n'
         '## 常规段\n\n'
         'DN11 目前整体占据 `172.16.0.0/16`\n\n'
         '新成员请先选择表中无归属的网段，然后再继续向下编排网段。选择网段时尽量与之前的网段连续。\n\n'
+        f'*【下一个建议使用的网段为 `172.16.{next_net172}.0/24`】*\n\n'
         '（下表按网段顺序排列）\n',
         file=f,
     )

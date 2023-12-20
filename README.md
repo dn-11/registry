@@ -59,7 +59,7 @@
 
   DN11 默认从 `172.16.0.0/16` 段中使用 `/24` 作为成员段。请优先选择该段内的最小一个未使用的 `/24` 地址。
 
-  您可在 [信息表](https://github.com/hdu-dn11/metadata/blob/main/README.md) 中查看已使用的 IP 段。
+  您可在 [信息表](https://github.com/hdu-dn11/metadata/blob/main/README.md) 中查看已使用的 IP 段和下一个建议使用的网段。
 
   如您确需使用其他 IP，请在群中说明情况。
 
