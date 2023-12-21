@@ -27,14 +27,6 @@ def IP(ip):
 datas = {}
 with open('as/service.yml', 'r', encoding='utf8') as f:
     service = yaml.load(f, Loader=yaml.Loader)
-service_remain = []
-for i in service:
-    t = {'ip': i['ip'], 'usage': i['usage']}
-    if type(i['asn']) is int:
-        t['asn'] = [i['asn']]
-    else:
-        t['asn'] = i['asn'].copy()
-    service_remain.append(t)
 for asn in os.listdir('as'):
     if asn.endswith('.yml') and (asn.startswith('421111') or asn.startswith('422008')):
         with open(f'as/{asn}', 'r', encoding='utf8') as f:
@@ -55,13 +47,27 @@ reserved = [
 normal_ips = []
 abnormal_ips = []
 net172_existed = set()
+monitor_metadata = {
+    "announcements": {
+        "assigned": [],
+        "public": [
+            {
+                "prefix": "172.16.255.0/24",
+                "service": [],
+            }
+        ],
+        "reserved": [str(i) for i in reserved],
+    },
+    "metadata": {
+        "4220084444": {
+            "display": "BaiMeow",
+            "monitor": {"appendix:": {"str": "str", "str11": ["str1", "str2"]}, "customNode": {}},
+        }
+    },
+}
 
 try:
     os.makedirs('metadata-repo')
-except FileExistsError:
-    pass
-try:
-    os.makedirs('monitor-metadata')
 except FileExistsError:
     pass
 
@@ -164,23 +170,22 @@ for asn, data in datas.items():
             }
         )
 
-    for i in service_remain:
-        if int(asn) in i['asn']:
-            data['ip'].append(i['ip'])
-            i['asn'].remove(int(asn))
-    temp = {'display': data['name'], 'announce': [str(IP(i)) for i in data['ip']]}
+    monitor_metadata['metadata'][asn] = {'display': data['name'], 'monitor': {}}
     if 'appendix' in data.get('monitor', {}):
-        temp['appendix'] = json.loads('{' + data['monitor']['appendix'] + '}')
+        monitor_metadata['metadata'][asn]['monitor']['appendix'] = json.loads('{' + data['monitor']['appendix'] + '}')
     if 'custom_node' in data.get('monitor', {}):
-        temp['customNode'] = json.loads('{' + data['monitor']['custom_node'] + '}')
-    with open(f'monitor-metadata/{asn}.json', 'w') as f:
-        json.dump(temp, f, ensure_ascii=False, indent=4)
+        monitor_metadata['metadata'][asn]['monitor']['customNode'] = json.loads(
+            '{' + data['monitor']['custom_node'] + '}'
+        )
+    if not monitor_metadata['metadata'][asn]['monitor']:
+        del monitor_metadata['metadata'][asn]['monitor']
     for ip in data['ip']:
         roa['roas'].append({'prefix': str(IP(ip)), 'maxLength': 32, 'asn': f'AS{asn}'})
         roa['metadata']['counts'] += 1
         roa['metadata']['valid'] += len(IP(ip))
         with open('metadata-repo/dn11_roa_bird2.conf', 'a') as f:
             print(f'route {str(IP(ip))} max 32 as {asn};', file=f)
+        monitor_metadata['announcements']['assigned'].append({'prefix': str(IP(ip)), 'asn': asn})
     with open('metadata-repo/dn11.zone', 'a') as f:
         if 'domain' in data:
             for domain, nss in data['domain'].items():
@@ -192,8 +197,9 @@ for asn, data in datas.items():
         if 'domain' in data or 'ns' in data:
             print(';', file=f)
 with open('metadata-repo/dn11_roa_bird2.conf', 'a') as f:
-    for s in (i for i in service_remain if i['asn']):
-        for asn in s['asn']:
+    for s in service:
+        asns = [s['asn']] if type(s['asn']) is int else s['asn']
+        for asn in asns:
             roa['roas'].append({'prefix': str(IP(s["ip"])), 'maxLength': 32, 'asn': f'AS{asn}'})
             roa['metadata']['counts'] += 1
             roa['metadata']['valid'] += len(IP(s["ip"]))
@@ -235,11 +241,14 @@ abnormal_ips = [
 ]
 service_ips = []
 for i in sorted(service, key=lambda x: IP(x['ip']).int()):
-    if type(i['asn']) is int:
-        asn_str = f'`{i["asn"]}`'
-    else:
-        asn_str = '<br>'.join(f'`{asn}`' for asn in sorted(i['asn']))
+    asn = [str(i['asn'])] if type(i['asn']) is int else [str(j) for j in sorted(i['asn'])]
+    monitor_metadata['announcements']['public'][0]['service'].append(
+        {"prefix": str(IP(i['ip'])), "usage": i['usage'], "allowedASN": asn}
+    )
+    asn_str = '<br>'.join(f'`{j}`' for j in asn)
     service_ips.append({'网段': str(IPy.IP(i['ip'])), 'ASN': asn_str, '用途': i['usage']})
+with open('monitor-metadata.json', 'w') as f:
+    json.dump(monitor_metadata, f, ensure_ascii=True, separators=(',', ':'))
 next_net172 = next(i for i in range(1, 256) if i not in net172_existed)
 with open('metadata-repo/README.md', 'w', encoding='utf-8') as f:
     print(
