@@ -67,7 +67,7 @@ monitor_metadata = {
 }
 
 try:
-    os.makedirs('metadata-repo')
+    os.makedirs('metadata')
 except FileExistsError:
     pass
 
@@ -80,7 +80,7 @@ roa = {
     "roas": [],
 }
 
-with open('old-metadata/dn11.zone', 'r') as f:
+with open('metadata.old/dn11.zone', 'r') as f:
     old_zone_text = f.read()
 old_zone_serial = next(i for i in old_zone_text.split('\n') if 'SOA' in i)
 old_zone_serial = old_zone_serial.split()[6]
@@ -89,7 +89,7 @@ if old_zone_serial.startswith(today):
     new_zone_serial = str(int(old_zone_serial) + 1)
 else:
     new_zone_serial = today + '01'
-with open('metadata-repo/dn11.zone', 'w') as f:
+with open('metadata/dn11.zone', 'w') as f:
     print(
         '$ORIGIN .\n'
         'dn11                    300     IN      SOA     '
@@ -97,7 +97,7 @@ with open('metadata-repo/dn11.zone', 'w') as f:
         ';',
         file=f,
     )
-with open('metadata-repo/dn11_roa_bird2.conf', 'w') as f:
+with open('metadata/dn11_roa_bird2.conf', 'w') as f:
     for ip in reserved + [
         IP('0.0.0.0/5'),
         IP('8.0.0.0/7'),
@@ -183,10 +183,10 @@ for asn, data in datas.items():
         roa['roas'].append({'prefix': str(IP(ip)), 'maxLength': 32, 'asn': f'AS{asn}'})
         roa['metadata']['counts'] += 1
         roa['metadata']['valid'] += len(IP(ip))
-        with open('metadata-repo/dn11_roa_bird2.conf', 'a') as f:
+        with open('metadata/dn11_roa_bird2.conf', 'a') as f:
             print(f'route {str(IP(ip))} max 32 as {asn};', file=f)
         monitor_metadata['announcements']['assigned'].append({'prefix': str(IP(ip)), 'asn': asn})
-    with open('metadata-repo/dn11.zone', 'a') as f:
+    with open('metadata/dn11.zone', 'a') as f:
         if 'domain' in data:
             for domain, nss in data['domain'].items():
                 for ns in nss:
@@ -196,7 +196,7 @@ for asn, data in datas.items():
                 print(f'{server.ljust(24)}60      IN      A       {address}', file=f)
         if 'domain' in data or 'ns' in data:
             print(';', file=f)
-with open('metadata-repo/dn11_roa_bird2.conf', 'a') as f:
+with open('metadata/dn11_roa_bird2.conf', 'a') as f:
     for s in service:
         asns = [s['asn']] if type(s['asn']) is int else s['asn']
         for asn in asns:
@@ -204,21 +204,21 @@ with open('metadata-repo/dn11_roa_bird2.conf', 'a') as f:
             roa['metadata']['counts'] += 1
             roa['metadata']['valid'] += len(IP(s["ip"]))
             print(f'route {str(IP(s["ip"]))} max 32 as {asn};', file=f)
-with open('metadata-repo/dn11_roa_gortr.json', 'w') as f:
+with open('metadata/dn11_roa_gortr.json', 'w') as f:
     json.dump(roa, f, ensure_ascii=True, separators=(',', ':'))
-with open('metadata-repo/dn11.zone', 'a') as f:
+with open('metadata/dn11.zone', 'a') as f:
     for server in dns_root_server.keys():
         print(f'dn11                    60      IN      NS      {server}.root.dn11', file=f)
     print(';', file=f)
     for server, address in dns_root_server.items():
         print(f'{server}.root.dn11 {" " * (13 - len(server))}60      IN      A       {address}', file=f)
-with open('metadata-repo/dn11.zone', 'r') as f:
+with open('metadata/dn11.zone', 'r') as f:
     new_zone_text = f.read()
 if new_zone_text != old_zone_text:
     new_zone_text = new_zone_text.split('\n')
     new_zone_text[1] = new_zone_text[1].replace(old_zone_serial, new_zone_serial)
     new_zone_text = '\n'.join(new_zone_text)
-    with open('metadata-repo/dn11.zone', 'w') as f:
+    with open('metadata/dn11.zone', 'w') as f:
         f.write(new_zone_text)
 
 normal_ips = [
@@ -247,10 +247,10 @@ for i in sorted(service, key=lambda x: IP(x['ip']).int()):
     )
     asn_str = '<br>'.join(f'`{j}`' for j in asn)
     service_ips.append({'网段': str(IPy.IP(i['ip'])), 'ASN': asn_str, '用途': i['usage']})
-with open('monitor-metadata.json', 'w') as f:
+with open('metadata/monitor-metadata.json', 'w') as f:
     json.dump(monitor_metadata, f, ensure_ascii=True, separators=(',', ':'))
 next_net172 = next(i for i in range(1, 256) if i not in net172_existed)
-with open('metadata-repo/README.md', 'w', encoding='utf-8') as f:
+with open('metadata/README.md', 'w', encoding='utf-8') as f:
     print(
         '# DN11 信息表\n\n'
         '## 常规段\n\n'
@@ -301,6 +301,6 @@ with open('metadata-repo/README.md', 'w', encoding='utf-8') as f:
         '| `172.16.0.0/16` | DN11 常规成员段 |\n'
         '| `172.16.255.0/24` | 公共服务段 |\n'
         f'| {reserved_str} | 保留段  |\n'
-        '| `172.16.128.0/24`<br>`172.16.129.0/24` | 不建议 |\n',
+        '| `172.16.128.0/24`<br>`172.16.129.0/24` | 不建议 |',
         file=f,
     )

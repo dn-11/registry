@@ -31,7 +31,7 @@ jobs:
         with:
           token: ${{ secrets.GH_TOKEN }}
           repository: hdu-dn11/metadata
-          path: old-metadata
+          path: metadata.old
           sparse-checkout: |
             dn11.zone
           sparse-checkout-cone-mode: false
@@ -41,7 +41,8 @@ jobs:
           python3 script/generator.py
       - name: Upload Metadata to GitHub
         run: |
-          cd metadata-repo
+          cd metadata
+          mv monitor-metadata.json ..
           git init
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
@@ -52,7 +53,7 @@ jobs:
           git push --force -u origin main
       - name: Prepare for COS Upload
         run: |
-          cd metadata-repo
+          cd metadata
           rm -rf .git README.md
           mv ../monitor-metadata.json .
       - name: Upload Monitor-Metadata to COS
@@ -63,6 +64,6 @@ jobs:
           secret_key: ${{ secrets.TENCENT_CLOUD_SECRET_KEY }}
           cos_bucket: ${{ secrets.COS_BUCKET }}
           cos_region: ${{ secrets.COS_REGION }}
-          local_path: 'metadata-repo'
+          local_path: 'metadata'
           remote_path: ''
           clean: false
