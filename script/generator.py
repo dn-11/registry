@@ -27,7 +27,14 @@ def IP(ip):
 datas = {}
 with open('as/service.yml', 'r', encoding='utf8') as f:
     service = yaml.load(f, Loader=yaml.Loader)
-service_remain = service.copy()
+service_remain = []
+for i in service:
+    t = {'ip': i['ip'], 'usage': i['usage']}
+    if type(i['asn']) is int:
+        t['asn'] = [i['asn']]
+    else:
+        t['asn'] = i['asn'].copy()
+    service_remain.append(t)
 for asn in os.listdir('as'):
     if asn.endswith('.yml') and (asn.startswith('421111') or asn.startswith('422008')):
         with open(f'as/{asn}', 'r', encoding='utf8') as f:
@@ -158,9 +165,9 @@ for asn, data in datas.items():
         )
 
     for i in service_remain:
-        if str(i.get('asn', '')) == asn:
+        if int(asn) in i['asn']:
             data['ip'].append(i['ip'])
-            service_remain.remove(i)
+            i['asn'].remove(int(asn))
     temp = {'display': data['name'], 'announce': [str(IP(i)) for i in data['ip']]}
     if 'appendix' in data.get('monitor', {}):
         temp['appendix'] = json.loads('{' + data['monitor']['appendix'] + '}')
@@ -185,11 +192,12 @@ for asn, data in datas.items():
         if 'domain' in data or 'ns' in data:
             print(';', file=f)
 with open('metadata-repo/dn11_roa_bird2.conf', 'a') as f:
-    for s in (i for i in service_remain if 'asn' in i):
-        roa['roas'].append({'prefix': str(IP(s["ip"])), 'maxLength': 32, 'asn': f'AS{s["asn"]}'})
-        roa['metadata']['counts'] += 1
-        roa['metadata']['valid'] += len(IP(s["ip"]))
-        print(f'route {str(IP(s["ip"]))} max 32 as {s["asn"]};', file=f)
+    for s in (i for i in service_remain if i['asn']):
+        for asn in s['asn']:
+            roa['roas'].append({'prefix': str(IP(s["ip"])), 'maxLength': 32, 'asn': f'AS{asn}'})
+            roa['metadata']['counts'] += 1
+            roa['metadata']['valid'] += len(IP(s["ip"]))
+            print(f'route {str(IP(s["ip"]))} max 32 as {asn};', file=f)
 with open('metadata-repo/dn11_roa_gortr.json', 'w') as f:
     json.dump(roa, f, ensure_ascii=True, separators=(',', ':'))
 with open('metadata-repo/dn11.zone', 'a') as f:
@@ -225,14 +233,13 @@ abnormal_ips = [
     }
     for i in sorted(abnormal_ips, key=lambda x: x['网段'][0].int())
 ]
-service_ips = [
-    {
-        '网段': str(IPy.IP(i['ip'])),
-        'ASN': f"`{i.get('asn', 'Anycast')}`",
-        '用途': i.get('usage', ''),
-    }
-    for i in sorted(service, key=lambda x: IP(x['ip']).int())
-]
+service_ips = []
+for i in sorted(service, key=lambda x: IP(x['ip']).int()):
+    if type(i['asn']) is int:
+        asn_str = f'`{i["asn"]}`'
+    else:
+        asn_str = '<br>'.join(f'`{asn}`' for asn in sorted(i['asn']))
+    service_ips.append({'网段': str(IPy.IP(i['ip'])), 'ASN': asn_str, '用途': i['usage']})
 next_net172 = next(i for i in range(1, 256) if i not in net172_existed)
 with open('metadata-repo/README.md', 'w', encoding='utf-8') as f:
     print(
@@ -273,17 +280,18 @@ with open('metadata-repo/README.md', 'w', encoding='utf-8') as f:
     reserved_str = ''
     for index, ip in enumerate(str(i) for i in reserved):
         reserved_str += f'`{ip}`'
-        if index % 2 == 1:
-            reserved_str += '<br>'
-        else:
-            reserved_str += ' '
+        if index != len(reserved) - 1:
+            if index % 2 == 1:
+                reserved_str += '<br>'
+            else:
+                reserved_str += ' '
     print(
         '\n## 特殊段说明\n\n'
         '| 网段 | 说明 |\n'
         '| --- | --- |\n'
         '| `172.16.0.0/16` | DN11 常规成员段 |\n'
         '| `172.16.255.0/24` | 公共服务段 |\n'
-        f'| {reserved_str.strip()} | 保留段  |\n'
+        f'| {reserved_str} | 保留段  |\n'
         '| `172.16.128.0/24`<br>`172.16.129.0/24` | 不建议 |\n',
         file=f,
     )

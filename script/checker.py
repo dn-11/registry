@@ -80,19 +80,32 @@ if new_file == 'service':
     with open('service.yml', 'r', encoding='utf8') as f:
         data = yaml.load(f, Loader=yaml.Loader)
     for i in data:
+        ip = 'N/A'
         try:
             ip = IP(i['ip'])
-            ip.NoPrefixForSingleIp = None
             if len(ip) != 1:
                 log.error(f'IP `{str(ip)}` 不为单 IP。对服务段的申请必须是 /32')
             elif ip not in IP('172.16.255.0/24'):
                 log.error(f'IP `{str(ip)}` 不在服务段 `172.16.255.0/24` 内')
         except (ValueError, KeyError):
             log.error('缺少 `ip` 字段或格式错误')
-    if len(set(i['ip'] for i in data if 'ip' in i)) != len(list(i for i in data if 'ip' in i)):
-        log.error('服务段有重复 IP')
-    if any('usage' not in i for i in data):
-        log.error('缺少 `usage` 字段')
+        if 'usage' not in i:
+            log.error(f'IP `{str(ip)}` 缺少 `usage` 字段')
+        elif type(i['usage']) is not str:
+            log.error(f'IP `{str(ip)}` 的 `usage` 字段不为字符串')
+        if 'asn' not in i:
+            log.error(f'IP `{str(ip)}` 缺少 `asn` 字段')
+        else:
+            if type(i['asn']) is not list:
+                i['asn'] = [i['asn']]
+            for j in i['asn']:
+                if type(j) is not int:
+                    log.error(f'IP `{str(ip)}` 的 ASN 字段 `{j}` 不为整数')
+                elif not (4211110000 <= j <= 4211119999 or 4220080000 <= j <= 4220089999):
+                    log.error(f'IP `{str(ip)}` 的 ASN `{j}` 不为 `421111xxxx` 或 `422008xxxx`')
+    ips = [i['ip'] for i in data]
+    if dup := set([str(IP(ip)) for ip in ips if ips.count(ip) > 1]):
+        log.error('服务段有重复 IP：' + ', '.join(f'`{i}`' for i in sorted(list(dup))))
     log.exit()
 
 datas = {}
