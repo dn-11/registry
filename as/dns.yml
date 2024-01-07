@@ -16,3 +16,6 @@
 - name: BaiMeow
   ip: 172.16.4.6
   root_domain: b
+- name: ibbbb
+  ip: 172.16.12.11
+  root_domain: v
