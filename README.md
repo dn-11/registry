@@ -109,6 +109,8 @@ DN11 将 `172.16.255.0/24` 作为服务段，用于提供各类服务，每个�
 
 如需注册新服务，可修改 [`as/services.yml`](https://github.com/hdu-dn11/registry/blob/main/as/service.yml) 文件。
 
+DNS 服务使用 `172.16.255.53`，无需在此处注册。如需加入 Anycast，请参见下一章节。
+
 - `ip`
 
   **必填**
@@ -126,3 +128,27 @@ DN11 将 `172.16.255.0/24` 作为服务段，用于提供各类服务，每个�
   **必填**
 
   提供服务的 ASN。如 AnyCast 可用列表填写多个 ASN。
+
+### Anycast DNS 注册
+
+`172.16.255.53` 为 DN11 的 Anycast DNS。希望提供 Anycast 的成员需要修改 [`as/dns.yml`](https://github.com/hdu-dn11/registry/blob/main/as/dns.yml) 文件。
+
+- `name`
+
+  **必填**
+
+  您的名字 / ID
+
+- `ip`
+
+  **必填**
+
+  Anycast DNS 服务的单播 IP 地址
+
+- `root_domain`
+
+  **必填**
+
+  根域名前缀
+
+  DN11 DNS 根域名为 `<prefix>.root.dn11`
