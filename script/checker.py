@@ -60,7 +60,7 @@ elif path.suffix != '.yml':
     log.error(f"文件 `{new_file}` 非 yml 格式")
 elif path.stem == 'example':
     log.warning("修改了 `example.yml` 文件")
-elif path.stem != 'service':
+elif path.stem not in ['service', 'dns']:
     try:
         asn = int(path.stem)
         if not (4211110000 <= asn <= 4211119999 or 4220080000 <= asn <= 4220089999):
@@ -87,6 +87,8 @@ if new_file == 'service':
                 log.error(f'IP `{str(ip)}` 不为单 IP。对服务段的申请必须是 /32')
             elif ip not in IP('172.16.255.0/24'):
                 log.error(f'IP `{str(ip)}` 不在服务段 `172.16.255.0/24` 内')
+            elif ip == IP('172.16.255.53'):
+                log.error('DN11 DNS IP 不可申请。如需注册请编辑 `dns.yml` 文件')
         except (ValueError, KeyError):
             log.error('缺少 `ip` 字段或格式错误')
         if 'usage' not in i:
@@ -114,6 +116,31 @@ for asn in os.listdir():
         with open(asn, 'r', encoding='utf8') as f:
             data = yaml.load(f, Loader=yaml.Loader)
             datas[asn[:-4]] = data
+
+if new_file == 'dns':
+    with open('dns.yml', 'r', encoding='utf8') as f:
+        data = yaml.load(f, Loader=yaml.Loader)
+    ips = [IP(j) for i in datas.values() for j in i['ip']]
+    for i in data:
+        ip = 'N/A'
+        try:
+            ip = IP(i['ip'])
+            if len(ip) != 1:
+                log.error(f'IP `{str(ip)}` 不为单 IP。对 DNS 的申请必须是 /32')
+            elif not any(ip in i for i in ips):
+                log.error(f'IP `{str(ip)}` 不在已申请的 IP 段内')
+        except (ValueError, KeyError):
+            log.error('缺少 `ip` 字段或格式错误')
+        if 'name' not in i:
+            log.error('缺少 `name` 字段')
+        elif type(i['name']) is not str:
+            log.error(f"IP `{str(ip)}` 的 `name` 字段不为字符串")
+        if 'root_domain' not in i:
+            log.error('缺少 `root_domain` 字段')
+        elif type(i['root_domain']) is not str:
+            log.error(f"IP `{str(ip)}` 的 `root_domain` 字段不为字符串")
+    log.exit()
+
 if 'ip' not in datas[new_file]:
     log.error('缺少 `ip` 字段')
 elif type(datas[new_file]['ip']) is not list:

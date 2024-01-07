@@ -8,15 +8,6 @@ import IPy
 import yaml
 from py_markdown_table.markdown_table import markdown_table
 
-dns_root_server = {
-    'a': '172.16.7.53',  # GoldenSheep
-    'b': '172.16.4.6',  # BaiMeow
-    'h': '100.64.0.1',  # Hakuya
-    'i': '172.16.2.13',  # Iraze
-    'p': '10.18.1.154',  # Potat0
-    't': '172.16.3.53',  # TypeScript
-}
-
 
 def IP(ip):
     obj = IPy.IP(ip)
@@ -27,6 +18,8 @@ def IP(ip):
 datas = {}
 with open('as/service.yml', 'r', encoding='utf8') as f:
     service = yaml.load(f, Loader=yaml.Loader)
+with open('as/dns.yml', 'r', encoding='utf8') as f:
+    dns = yaml.load(f, Loader=yaml.Loader)
 for asn in os.listdir('as'):
     if asn.endswith('.yml') and (asn.startswith('421111') or asn.startswith('422008')):
         with open(f'as/{asn}', 'r', encoding='utf8') as f:
@@ -148,6 +141,9 @@ for asn, data in datas.items():
     net_non172 = [IP(i) for i in data['ip'] if IP(i) not in IP('172.16.0.0/16')]
     net_172.sort(key=lambda x: x.int())
     net_non172.sort(key=lambda x: x.int())
+    for d in dns:
+        if any(IP(d['ip']) in i for i in net_172 + net_non172):
+            d['asn'] = asn
     if len(net_172) > 0:
         normal_ips.append(
             {
@@ -202,16 +198,23 @@ with open('metadata/dn11_roa_bird2.conf', 'a') as f:
         for asn in asns:
             roa['roas'].append({'prefix': str(IP(s["ip"])), 'maxLength': 32, 'asn': f'AS{asn}'})
             roa['metadata']['counts'] += 1
-            roa['metadata']['valid'] += len(IP(s["ip"]))
+            roa['metadata']['valid'] += 1
             print(f'route {str(IP(s["ip"]))} max 32 as {asn};', file=f)
+    for d in dns:
+        roa['roas'].append({'prefix': '172.16.255.53/32', 'maxLength': 32, 'asn': f'AS{d["asn"]}'})
+        roa['metadata']['counts'] += 1
+        roa['metadata']['valid'] += 1
+        print(f'route 172.16.255.53/32 max 32 as {d["asn"]};', file=f)
 with open('metadata/dn11_roa_gortr.json', 'w') as f:
     json.dump(roa, f, ensure_ascii=True, separators=(',', ':'))
 with open('metadata/dn11.zone', 'a') as f:
-    for server in dns_root_server.keys():
-        print(f'dn11                    60      IN      NS      {server}.root.dn11', file=f)
+    for server in dns:
+        print(f'dn11                    60      IN      NS      {server["root_domain"]}.root.dn11', file=f)
     print(';', file=f)
-    for server, address in dns_root_server.items():
-        print(f'{server}.root.dn11 {" " * (13 - len(server))}60      IN      A       {address}', file=f)
+    for server in dns:
+        ip = str(IP(server['ip']))
+        root_domain = server['root_domain']
+        print(f'{root_domain}.root.dn11 {" " * (13 - len(root_domain))}60      IN      A       {ip}', file=f)
 with open('metadata/dn11.zone', 'r') as f:
     new_zone_text = f.read()
 if new_zone_text != old_zone_text:
@@ -239,7 +242,17 @@ abnormal_ips = [
     }
     for i in sorted(abnormal_ips, key=lambda x: x['网段'][0].int())
 ]
+dns_ips = [
+    {
+        '归属': escape(i['name']),
+        'ASN': f"`{i['asn']}`",
+        'IP': f"`{str(IP(i['ip']))}`",
+        '根域': f"`{i['root_domain']}.root.dn11`",
+    }
+    for i in sorted(dns, key=lambda x: int(x['asn']))
+]
 service_ips = []
+service.append({'ip': '172.16.255.53', 'usage': 'DNS', 'asn': sorted([i['asn'] for i in dns], key=int)})
 for i in sorted(service, key=lambda x: IP(x['ip']).int()):
     asn = [str(i['asn'])] if type(i['asn']) is int else [str(j) for j in sorted(i['asn'])]
     monitor_metadata['announcements']['public'][0]['service'].append(
@@ -285,6 +298,13 @@ with open('metadata/README.md', 'w', encoding='utf-8') as f:
         md_text = md_text.split('\n', 2)
         print(md_text[0], file=f)
         print('|---|:-:|---|', file=f)
+        print(md_text[2], file=f)
+    if dns_ips:
+        print('\n## DNS 服务提供者\n\n（下表按 ASN 顺序排列）\n', file=f)
+        md_text = markdown_table(dns_ips).set_params(row_sep='markdown', quote=False).get_markdown()
+        md_text = md_text.split('\n', 2)
+        print(md_text[0], file=f)
+        print('|:-:|:-:|---|---|', file=f)
         print(md_text[2], file=f)
     reserved_str = ''
     for index, ip in enumerate(str(i) for i in reserved):
