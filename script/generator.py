@@ -212,7 +212,7 @@ with open('metadata/dn11.zone', 'a') as f:
         print(f'dn11                    60      IN      NS      {server["root_domain"]}.root.dn11', file=f)
     print(';', file=f)
     for server in dns:
-        ip = str(IP(server['ip']))
+        ip = str(IPy.IP(server['ip']))
         root_domain = server['root_domain']
         print(f'{root_domain}.root.dn11 {" " * (13 - len(root_domain))}60      IN      A       {ip}', file=f)
 with open('metadata/dn11.zone', 'r') as f:
