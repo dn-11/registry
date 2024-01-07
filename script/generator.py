@@ -15,6 +15,7 @@ dns_root_server = {
     'i': '172.16.2.13',  # Iraze
     'p': '10.18.1.154',  # Potat0
     't': '172.16.3.53',  # TypeScript
+    'd': '172.16.33.53', # Daidr
 }
 
 
