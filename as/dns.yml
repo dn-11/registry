@@ -8,7 +8,7 @@
   ip: 172.16.2.13
   root_domain: i
 - name: Potat0
-  ip: 10.18.1.154
+  ip: 10.18.0.53
   root_domain: p
 - name: Hakuya
   ip: 100.64.0.1
