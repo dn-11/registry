@@ -86,7 +86,8 @@ with open('metadata/dn11.zone', 'w') as f:
     print(
         '$ORIGIN .\n'
         'dn11                    300     IN      SOA     '
-        f'a.root.dn11 hostmaster.dn11 {old_zone_serial} 60 60 604800 60',
+        f'a.root.dn11 hostmaster.dn11 {old_zone_serial} 60 60 604800 60\n'
+        'dn11                    300     IN      NS      172.16.255.53',
         file=f,
     )
 with open('metadata/dn11_roa_bird2.conf', 'w') as f:
