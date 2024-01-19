@@ -86,8 +86,7 @@ with open('metadata/dn11.zone', 'w') as f:
     print(
         '$ORIGIN .\n'
         'dn11                    300     IN      SOA     '
-        f'a.root.dn11 hostmaster.dn11 {old_zone_serial} 60 60 604800 60\n'
-        ';',
+        f'a.root.dn11 hostmaster.dn11 {old_zone_serial} 60 60 604800 60',
         file=f,
     )
 with open('metadata/dn11_roa_bird2.conf', 'w') as f:
@@ -182,16 +181,16 @@ for asn, data in datas.items():
         with open('metadata/dn11_roa_bird2.conf', 'a') as f:
             print(f'route {str(IP(ip))} max 32 as {asn};', file=f)
         monitor_metadata['announcements']['assigned'].append({'prefix': str(IP(ip)), 'asn': asn})
-    with open('metadata/dn11.zone', 'a') as f:
-        if 'domain' in data:
-            for domain, nss in data['domain'].items():
-                for ns in nss:
-                    print(f'{domain.ljust(24)}60      IN      NS      {ns}', file=f)
-        if 'ns' in data:
-            for server, address in data['ns'].items():
-                print(f'{server.ljust(24)}60      IN      A       {address}', file=f)
-        if 'domain' in data or 'ns' in data:
+    if 'domain' in data or 'ns' in data:
+        with open('metadata/dn11.zone', 'a') as f:
             print(';', file=f)
+            if 'domain' in data:
+                for domain, nss in data['domain'].items():
+                    for ns in nss:
+                        print(f'{domain.ljust(24)}60      IN      NS      {ns}', file=f)
+            if 'ns' in data:
+                for server, address in data['ns'].items():
+                    print(f'{server.ljust(24)}60      IN      A       {address}', file=f)
 with open('metadata/dn11_roa_bird2.conf', 'a') as f:
     for s in service:
         asns = [s['asn']] if type(s['asn']) is int else s['asn']
@@ -207,14 +206,6 @@ with open('metadata/dn11_roa_bird2.conf', 'a') as f:
         print(f'route 172.16.255.53/32 max 32 as {d["asn"]};', file=f)
 with open('metadata/dn11_roa_gortr.json', 'w') as f:
     json.dump(roa, f, ensure_ascii=True, separators=(',', ':'))
-with open('metadata/dn11.zone', 'a') as f:
-    for server in dns:
-        print(f'dn11                    60      IN      NS      {server["root_domain"]}.root.dn11', file=f)
-    print(';', file=f)
-    for server in dns:
-        ip = str(IPy.IP(server['ip']))
-        root_domain = server['root_domain']
-        print(f'{root_domain}.root.dn11 {" " * (13 - len(root_domain))}60      IN      A       {ip}', file=f)
 with open('metadata/dn11.zone', 'r') as f:
     new_zone_text = f.read()
 if new_zone_text != old_zone_text:
@@ -246,8 +237,7 @@ dns_ips = [
     {
         '归属': escape(i['name']),
         'ASN': f"`{i['asn']}`",
-        'IP': f"`{str(IP(i['ip']))}`",
-        '根域': f"`{i['root_domain']}.root.dn11`",
+        'Unicast IP': f"`{str(IPy.IP(i['ip']))}`",
     }
     for i in sorted(dns, key=lambda x: int(x['asn']))
 ]
@@ -304,7 +294,7 @@ with open('metadata/README.md', 'w', encoding='utf-8') as f:
         md_text = markdown_table(dns_ips).set_params(row_sep='markdown', quote=False).get_markdown()
         md_text = md_text.split('\n', 2)
         print(md_text[0], file=f)
-        print('|:-:|:-:|---|---|', file=f)
+        print('|:-:|:-:|---|', file=f)
         print(md_text[2], file=f)
     reserved_str = ''
     for index, ip in enumerate(str(i) for i in reserved):

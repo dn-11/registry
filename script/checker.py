@@ -135,10 +135,6 @@ if new_file == 'dns':
             log.error('缺少 `name` 字段')
         elif type(i['name']) is not str:
             log.error(f"IP `{str(ip)}` 的 `name` 字段不为字符串")
-        if 'root_domain' not in i:
-            log.error('缺少 `root_domain` 字段')
-        elif type(i['root_domain']) is not str:
-            log.error(f"IP `{str(ip)}` 的 `root_domain` 字段不为字符串")
     log.exit()
 
 if 'ip' not in datas[new_file]:

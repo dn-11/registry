@@ -143,12 +143,4 @@ DNS 服务使用 `172.16.255.53`，无需在此处注册。如需加入 Anycast�
 
   **必填**
 
-  Anycast DNS 服务的单播 IP 地址
-
-- `root_domain`
-
-  **必填**
-
-  根域名前缀
-
-  DN11 DNS 根域名为 `<prefix>.root.dn11`
+  Anycast DNS 服务的 Unicast IP 地址
