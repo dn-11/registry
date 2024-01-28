@@ -2,6 +2,7 @@ name: GoldenSheep
 contact: zhihanghong04@gmail.com
 ip:
   - 172.16.7.0/24
+  - 172.16.45.0/24
 domain:
   gs.dn11:
     - ns1.gs.dn11
