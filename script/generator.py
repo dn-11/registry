@@ -205,7 +205,7 @@ ix_ips = [
     {
         '归属': escape(i['name']),
         '网段': f"`{str(IPy.IP(i['ip']))}`",
-        'RS': f"`{i['rs']['asn']}`<br>`{str(IPy.IP(i['rs']['ip']))}`" if 'rs' in i else '',
+        'RS': f"`{i['rs']['asn']}`<br>`{str(IPy.IP(i['rs']['ip']))}`" if 'rs' in i else 'N/A',
     }
     for i in sorted(ix, key=lambda x: IP(x['ip']).int())
 ]
