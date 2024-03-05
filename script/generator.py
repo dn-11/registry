@@ -4,6 +4,7 @@ import os
 from datetime import datetime
 from html import escape
 
+import iplist
 import IPy
 import yaml
 from py_markdown_table.markdown_table import markdown_table
@@ -20,25 +21,14 @@ with open('as/service.yml', 'r', encoding='utf8') as f:
     service = yaml.load(f, Loader=yaml.Loader)
 with open('as/dns.yml', 'r', encoding='utf8') as f:
     dns = yaml.load(f, Loader=yaml.Loader)
+with open('as/ix.yml', 'r', encoding='utf8') as f:
+    ix = yaml.load(f, Loader=yaml.Loader)
 for asn in os.listdir('as'):
     if asn.endswith('.yml') and (asn.startswith('421111') or asn.startswith('422008')):
         with open(f'as/{asn}', 'r', encoding='utf8') as f:
             data = yaml.load(f, Loader=yaml.Loader)
             datas[asn[:-4]] = data
 
-reserved = [
-    IP('10.0.0.0/24'),
-    IP('10.42.0.0/16'),
-    IP('10.43.0.0/16'),
-    IP('172.16.0.0/24'),
-    IP('172.16.200.0/24'),
-    IP('172.16.254.0/24'),
-    IP('172.17.0.0/16'),
-    IP('172.20.0.0/14'),
-    IP('172.26.0.0/16'),
-    IP('172.27.0.0/16'),
-    IP('192.168.1.0/24'),
-]
 normal_ips = []
 abnormal_ips = []
 net172_existed = set()
@@ -51,7 +41,7 @@ monitor_metadata = {
                 "service": [],
             }
         ],
-        "reserved": [str(i) for i in reserved],
+        "iplist.RESERVED": [str(i) for i in iplist.RESERVED],
     },
     "metadata": {
         "4220084444": {
@@ -93,46 +83,7 @@ with open('metadata/dn11.zone', 'w') as f:
         file=f,
     )
 with open('metadata/dn11_roa_bird2.conf', 'w') as f:
-    for ip in reserved + [
-        IP('0.0.0.0/5'),
-        IP('8.0.0.0/7'),
-        IP('11.0.0.0/8'),
-        IP('12.0.0.0/6'),
-        IP('16.0.0.0/4'),
-        IP('32.0.0.0/3'),
-        IP('64.0.0.0/3'),
-        IP('96.0.0.0/6'),
-        IP('100.0.0.0/10'),
-        IP('100.128.0.0/9'),
-        IP('101.0.0.0/8'),
-        IP('102.0.0.0/7'),
-        IP('104.0.0.0/5'),
-        IP('112.0.0.0/4'),
-        IP('128.0.0.0/3'),
-        IP('160.0.0.0/5'),
-        IP('168.0.0.0/6'),
-        IP('172.0.0.0/12'),
-        IP('172.32.0.0/11'),
-        IP('172.64.0.0/10'),
-        IP('172.128.0.0/9'),
-        IP('173.0.0.0/8'),
-        IP('174.0.0.0/7'),
-        IP('176.0.0.0/4'),
-        IP('192.0.0.0/9'),
-        IP('192.128.0.0/11'),
-        IP('192.160.0.0/13'),
-        IP('192.169.0.0/16'),
-        IP('192.170.0.0/15'),
-        IP('192.172.0.0/14'),
-        IP('192.176.0.0/12'),
-        IP('192.192.0.0/10'),
-        IP('193.0.0.0/8'),
-        IP('194.0.0.0/7'),
-        IP('196.0.0.0/6'),
-        IP('200.0.0.0/5'),
-        IP('208.0.0.0/4'),
-        IP('224.0.0.0/3'),
-    ]:
+    for ip in iplist.RESERVED + iplist.PUBLIC:
         print(f'route {str(ip)} max 32 as 4200000000;', file=f)
         roa['roas'].append({'prefix': str(ip), 'maxLength': 32, 'asn': 'AS4200000000'})
         roa['metadata']['counts'] += 1
@@ -202,11 +153,17 @@ with open('metadata/dn11_roa_bird2.conf', 'a') as f:
             roa['metadata']['counts'] += 1
             roa['metadata']['valid'] += 1
             print(f'route {str(IP(s["ip"]))} max 32 as {asn};', file=f)
-    for d in dns:
-        roa['roas'].append({'prefix': '172.16.255.53/32', 'maxLength': 32, 'asn': f'AS{d["asn"]}'})
+    for asn in [i['asn'] for i in dns]:
+        roa['roas'].append({'prefix': '172.16.255.53/32', 'maxLength': 32, 'asn': f'AS{asn}'})
         roa['metadata']['counts'] += 1
         roa['metadata']['valid'] += 1
-        print(f'route 172.16.255.53/32 max 32 as {d["asn"]};', file=f)
+        print(f'route 172.16.255.53/32 max 32 as {asn};', file=f)
+    for ixrs_ip, ixrs_asn in [(i['rs']['ip'], i['rs']['asn']) for i in ix if 'rs' in i]:
+        roa['roas'].append({'prefix': str(IP(ixrs_ip)), 'maxLength': 32, 'asn': f'AS{ixrs_asn}'})
+        roa['metadata']['counts'] += 1
+        roa['metadata']['valid'] += 1
+        print(f'route {str(IP(ixrs_ip))} max 32 as {ixrs_asn};', file=f)
+
 with open('metadata/dn11_roa_gortr.json', 'w') as f:
     json.dump(roa, f, ensure_ascii=True, separators=(',', ':'))
 with open('metadata/dn11.zone', 'r') as f:
@@ -244,6 +201,14 @@ dns_ips = [
     }
     for i in sorted(dns, key=lambda x: int(x['asn']))
 ]
+ix_ips = [
+    {
+        '归属': escape(i['name']),
+        '网段': f"`{str(IPy.IP(i['ip']))}`",
+        'RS': f"`{i['rs']['asn']}`<br>`{str(IPy.IP(i['rs']['ip']))}`" if 'rs' in i else '',
+    }
+    for i in sorted(ix, key=lambda x: IP(x['ip']).int())
+]
 service_ips = []
 service.append({'ip': '172.16.255.53', 'usage': 'DNS', 'asn': sorted([i['asn'] for i in dns], key=int)})
 for i in sorted(service, key=lambda x: IP(x['ip']).int()):
@@ -273,7 +238,11 @@ with open('metadata/README.md', 'w', encoding='utf-8') as f:
         print('|:-:|:-:|---|---|', file=f)
         print(md_text[2], file=f)
     print(
-        '\n' '## 使用非标段的成员\n\n' '使用非标段的成员如下表。\n\n' '新成员不得直接使用自己的非标段，请先在群内讨论。确有需要后再进行申请。\n\n' '（下表按网段顺序排列）\n',
+        '\n'
+        '## 使用非标段的成员\n\n'
+        '使用非标段的成员如下表。\n\n'
+        '新成员不得直接使用自己的非标段，请先在群内讨论。确有需要后再进行申请。\n\n'
+        '（下表按网段顺序排列）\n',
         file=f,
     )
     if abnormal_ips:
@@ -299,21 +268,32 @@ with open('metadata/README.md', 'w', encoding='utf-8') as f:
         print(md_text[0], file=f)
         print('|:-:|:-:|---|', file=f)
         print(md_text[2], file=f)
-    reserved_str = ''
-    for index, ip in enumerate(str(i) for i in reserved):
-        reserved_str += f'`{ip}`'
-        if index != len(reserved) - 1:
-            if index % 2 == 1:
-                reserved_str += '<br>'
-            else:
-                reserved_str += ' '
+    if ix_ips:
+        print('\n## IX\n\n（下表按网段顺序排列）\n', file=f)
+        md_text = markdown_table(ix_ips).set_params(row_sep='markdown', quote=False).get_markdown()
+        md_text = md_text.split('\n', 2)
+        print(md_text[0], file=f)
+        print('|:-:|---|:-:|', file=f)
+        print(md_text[2], file=f)
+
+    def ips2str(ips):
+        s = ''
+        for index, ip in enumerate(str(i) for i in ips):
+            s += f'`{ip}`'
+            if index != len(ips) - 1:
+                if index % 2 == 1:
+                    s += '<br>'
+                else:
+                    s += ' '
+        return s
+
     print(
         '\n## 特殊段说明\n\n'
         '| 网段 | 说明 |\n'
         '| --- | --- |\n'
         '| `172.16.0.0/16` | DN11 常规成员段 |\n'
         '| `172.16.255.0/24` | 公共服务段 |\n'
-        f'| {reserved_str} | 保留段  |\n'
-        '| `172.16.128.0/24`<br>`172.16.129.0/24` | 不建议 |',
+        f'| {ips2str(iplist.RESERVED)} | 保留段  |\n'
+        f'| {ips2str(iplist.NOT_RECOMMANDED)} | 不建议 |',
         file=f,
     )

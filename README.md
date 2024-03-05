@@ -144,3 +144,33 @@ DNS 服务使用 `172.16.255.53`，无需在此处注册。如需加入 Anycast�
   **必填**
 
   Anycast DNS 服务的 Unicast IP 地址
+
+### IX 注册
+
+DN11 中有数个 IX 接入点。为避免 IX 内使用的网段被其他成员误注册，新部署 IX 接入点后需要修改 [`as/ix.yml`](https://github.com/hdu-dn11/registry/blob/main/as/ix.yml) 文件以注册。
+
+- `name`
+
+  **必填**
+
+  IX 接入点名称
+
+- `ip`
+
+  **必填**
+
+  IX 接入点 IP 段
+
+- `rs`
+
+  **选填**。但若有，则必须包含下面两项
+
+  IX RS 服务器配置
+
+  - `asn`
+
+    IX RS 服务器 ASN
+
+  - `ip`
+
+    IX RS 服务器 IP 地址
