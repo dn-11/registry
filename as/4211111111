@@ -1,0 +1,10 @@
+ame: mOMo
+contact: 1246452649@qq.com
+ip:
+    - 172.16.61.0/24
+comment: hdu生活区15号楼
+monitor:
+  custom_node: |
+    "itemStyle": {
+            "color": "#66ccee"
+        }
