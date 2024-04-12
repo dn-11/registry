@@ -267,9 +267,9 @@ log.try_exit()
 for ip in datas[new_file]['ip']:
     for eip in existed_ip:
         if IP(ip) in eip:
-            log.error(f"IP `{ip}` 已被 `{existed_ip[eip]}` 持有")
+            log.warning(f"IP `{ip}` 在由 `{existed_ip[eip]}` 持有的 `{eip}` 段内")
         elif eip in IP(ip):
-            log.error(f"IP `{ip}` 与 `{existed_ip[eip]}` 持有的 `{eip}` 重叠")
+            log.warning(f"IP `{ip}` 与 `{existed_ip[eip]}` 持有的 `{eip}` 重叠")
 for domain in datas[new_file].get('domain', {}):
     if domain.lower() == 'root.dn11':
         log.error("域名 `root.dn11` 为保留域名")
