@@ -1,8 +1,7 @@
 name: douzza
 contact: '1747480774'
 ip:
-  - 10.18.0.0/16
-  - 192.168.29.0/24
+  - 172.16.29.0/16
 domain:
   potat0.dn11:
     - ns1.potat0.dn11
@@ -13,5 +12,5 @@ comment: bla bla
 monitor:
   appendix: |
     bla bla
-  custom_node: |
+  custom_node: 
     bla bla
