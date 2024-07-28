@@ -2,4 +2,5 @@ name: 0RAYS
 contact: 3537659915@qq.com
 ip:
   - 172.16.52.0/24
+  - 10.233.0.0/16
 comment: 科技馆10楼
