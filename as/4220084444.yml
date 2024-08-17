@@ -16,20 +16,6 @@ monitor:
   custom_node: |
     "itemStyle": {
         "color": "#f5b199",
-        "borderColor": {
-            "type": "radial",
-            "x": 0.5,
-            "y": 0.5,
-            "r": 0.5,
-            "colorStops": [
-                {
-                    "offset": 1,
-                    "color": "#efab93"
-                }
-            ]
-        },
-        "borderWidth": 1,
-        "borderCap": "round",
         "shadowBlur": 10,
         "shadowColor": "#f2a0a1",
         "shadowOffsetX": 0,
