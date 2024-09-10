@@ -1,0 +1,6 @@
+name: Rotastar
+contact: "1494453894"
+ip:
+  - 172.16.55.0/24
+domain:
+comment: HDU-14-109（2）
