@@ -50,17 +50,17 @@ if len(sys.argv) == 1:
     print('无修改的文件')
     exit(0)
 elif len(sys.argv) > 2:
-    log.error("每次 PR 仅支持修改一个文件")
+    log.error('每次 PR 仅支持修改一个文件')
 
 new_file = sys.argv[1]
 path = Path(new_file)
 
 if str(path.parent) != 'as':
-    log.error(f"修改了非 as 目录文件: `{new_file}`")
+    log.error(f'修改了非 as 目录文件: `{new_file}`')
 elif path.suffix != '.yml':
-    log.error(f"文件 `{new_file}` 非 yml 格式")
+    log.error(f'文件 `{new_file}` 非 yml 格式')
 elif path.stem == 'example':
-    log.warning("修改了 `example.yml` 文件")
+    log.warning('修改了 `example.yml` 文件')
 elif path.stem not in ['service', 'dns', 'ix']:
     with open('as/ix.yml', 'r', encoding='utf8') as f:
         data = yaml.load(f, Loader=yaml.Loader)
@@ -77,7 +77,7 @@ elif path.stem not in ['service', 'dns', 'ix']:
         elif asn in ixrs_asn:
             log.error(f'`AS{asn}` 已被 IX RS 占用')
     except ValueError:
-        log.error(f"文件 `{new_file}` ASN 格式错误，必须为 `421111xxxx` 或 `422008xxxx` (Vidar 成员)")
+        log.error(f'文件 `{new_file}` ASN 格式错误，必须为 `421111xxxx` 或 `422008xxxx` (Vidar 成员)')
 log.try_exit()
 
 os.chdir('as')
@@ -133,7 +133,7 @@ if new_file == 'ix':
                 elif any(ip in i for i in iplist.NOT_RECOMMANDED):
                     log.warning(f'IP `{ip}` 为不建议地址')
             except ValueError:
-                log.error(f"IP `{ip}` 格式错误")
+                log.error(f'IP `{ip}` 格式错误')
         if 'name' not in i:
             log.error('缺少 `name` 字段')
         elif type(i['name']) is not str:
@@ -197,7 +197,7 @@ if new_file == 'dns':
         if 'name' not in i:
             log.error('缺少 `name` 字段')
         elif type(i['name']) is not str:
-            log.error(f"IP `{str(ip)}` 的 `name` 字段不为字符串")
+            log.error(f'IP `{str(ip)}` 的 `name` 字段不为字符串')
     log.exit()
 
 if 'ip' not in datas[new_file]:
@@ -252,31 +252,31 @@ for asn in datas:
     existed_domain.update({i.lower(): asn for i in datas[asn].get('domain', {}).keys()})
     existed_ns.update({i.lower(): asn for i in datas[asn].get('ns', {}).keys()})
 if not all(i.endswith('.dn11') for i in datas[new_file].get('domain', {}).keys()):
-    log.error("域名必须以 .dn11 结尾")
+    log.error('域名必须以 .dn11 结尾')
 for i in datas[new_file]['ip']:
     try:
         IP(i)
     except ValueError:
-        log.error(f"IP `{i}` 格式错误")
+        log.error(f'IP `{i}` 格式错误')
 for i in datas[new_file].get('ns', {}).values():
     try:
         IP(i)
     except ValueError:
-        log.error(f"NS IP `{i}` 格式错误")
+        log.error(f'NS IP `{i}` 格式错误')
 log.try_exit()
 for ip in datas[new_file]['ip']:
     for eip in existed_ip:
         if IP(ip) in eip:
-            log.warning(f"IP `{ip}` 在由 `{existed_ip[eip]}` 持有的 `{eip}` 段内")
+            log.warning(f'IP `{ip}` 在由 `{existed_ip[eip]}` 持有的 `{eip}` 段内')
         elif eip in IP(ip):
-            log.warning(f"IP `{ip}` 与 `{existed_ip[eip]}` 持有的 `{eip}` 重叠")
+            log.warning(f'IP `{ip}` 与 `{existed_ip[eip]}` 持有的 `{eip}` 重叠')
 for domain in datas[new_file].get('domain', {}):
     if domain.lower() == 'root.dn11':
-        log.error("域名 `root.dn11` 为保留域名")
+        log.error('域名 `root.dn11` 为保留域名')
     elif domain.lower() in existed_domain:
-        log.error(f"域名 `{domain}` 已被 `{existed_domain[domain.lower()]}` 持有")
+        log.error(f'域名 `{domain}` 已被 `{existed_domain[domain.lower()]}` 持有')
     if not datas[new_file]['domain'][domain]:
-        log.error(f"域名 `{domain}` 未指定 NS")
+        log.error(f'域名 `{domain}` 未指定 NS')
         continue
     visited = set()
     dup = [x for x in datas[new_file]['domain'][domain] if x in visited or (visited.add(x) or False)]

@@ -33,20 +33,20 @@ normal_ips = []
 abnormal_ips = []
 net172_existed = set()
 monitor_metadata = {
-    "announcements": {
-        "assigned": [],
-        "public": [
+    'announcements': {
+        'assigned': [],
+        'public': [
             {
-                "prefix": "172.16.255.0/24",
-                "service": [],
+                'prefix': '172.16.255.0/24',
+                'service': [],
             }
         ],
-        "iplist.RESERVED": [str(i) for i in iplist.RESERVED],
+        'iplist.RESERVED': [str(i) for i in iplist.RESERVED],
     },
-    "metadata": {
-        "4220084444": {
-            "display": "BaiMeow",
-            "monitor": {"appendix:": {"str": "str", "str11": ["str1", "str2"]}, "customNode": {}},
+    'metadata': {
+        '4220084444': {
+            'display': 'BaiMeow',
+            'monitor': {'appendix:': {'str': 'str', 'str11': ['str1', 'str2']}, 'customNode': {}},
         }
     },
 }
@@ -57,12 +57,12 @@ except FileExistsError:
     pass
 
 roa = {
-    "metadata": {
-        "counts": 0,
-        "generated": int(datetime.now().timestamp()),
-        "valid": 0,
+    'metadata': {
+        'counts': 0,
+        'generated': int(datetime.now().timestamp()),
+        'valid': 0,
     },
-    "roas": [],
+    'roas': [],
 }
 
 with open('metadata.old/dn11.zone', 'r') as f:
@@ -149,7 +149,7 @@ with open('metadata/dn11_roa_bird2.conf', 'a') as f:
     for s in service:
         asns = [s['asn']] if type(s['asn']) is int else s['asn']
         for asn in asns:
-            roa['roas'].append({'prefix': str(IP(s["ip"])), 'maxLength': 32, 'asn': f'AS{asn}'})
+            roa['roas'].append({'prefix': str(IP(s['ip'])), 'maxLength': 32, 'asn': f'AS{asn}'})
             roa['metadata']['counts'] += 1
             roa['metadata']['valid'] += 1
             print(f'route {str(IP(s["ip"]))} max 32 as {asn};', file=f)
@@ -214,7 +214,7 @@ service.append({'ip': '172.16.255.53', 'usage': 'DNS', 'asn': sorted([i['asn'] f
 for i in sorted(service, key=lambda x: IP(x['ip']).int()):
     asn = [str(i['asn'])] if type(i['asn']) is int else [str(j) for j in sorted(i['asn'])]
     monitor_metadata['announcements']['public'][0]['service'].append(
-        {"prefix": str(IP(i['ip'])), "usage": i['usage'], "allowedASN": asn}
+        {'prefix': str(IP(i['ip'])), 'usage': i['usage'], 'allowedASN': asn}
     )
     asn_str = '<br>'.join(f'`{j}`' for j in asn)
     service_ips.append({'网段': str(IPy.IP(i['ip'])), 'ASN': asn_str, '用途': i['usage']})
@@ -238,11 +238,7 @@ with open('metadata/README.md', 'w', encoding='utf-8') as f:
         print('|:-:|:-:|---|---|', file=f)
         print(md_text[2], file=f)
     print(
-        '\n'
-        '## 使用非标段的成员\n\n'
-        '使用非标段的成员如下表。\n\n'
-        '新成员不得直接使用自己的非标段，请先在群内讨论。确有需要后再进行申请。\n\n'
-        '（下表按网段顺序排列）\n',
+        '\n' '## 使用非标段的成员\n\n' '使用非标段的成员如下表。\n\n' '新成员不得直接使用自己的非标段，请先在群内讨论。确有需要后再进行申请。\n\n' '（下表按网段顺序排列）\n',
         file=f,
     )
     if abnormal_ips:
