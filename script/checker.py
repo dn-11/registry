@@ -2,6 +2,7 @@
 import json
 import os
 import sys
+from math import log2
 from pathlib import Path
 
 import iplist
@@ -251,7 +252,7 @@ for asn in datas:
     existed_ip.update({IP(i): asn for i in datas[asn]['ip']})
     existed_domain.update({i.lower(): asn for i in datas[asn].get('domain', {}).keys()})
     existed_ns.update({i.lower(): asn for i in datas[asn].get('ns', {}).keys()})
-if not all(i.endswith('.dn11') for i in datas[new_file].get('domain', {}).keys()):
+if not all(i.endswith('.dn11') or i.endswith('in-addr.arpa') for i in datas[new_file].get('domain', {}).keys()):
     log.error('域名必须以 .dn11 结尾')
 for i in datas[new_file]['ip']:
     try:
@@ -270,6 +271,7 @@ for ip in datas[new_file]['ip']:
             log.warning(f'IP `{ip}` 在由 `{existed_ip[eip]}` 持有的 `{eip}` 段内')
         elif eip in IP(ip):
             log.warning(f'IP `{ip}` 与 `{existed_ip[eip]}` 持有的 `{eip}` 重叠')
+allowed_rdns_domain = [IP(i).reverseName()[:-1] for i in datas[new_file]['ip'] if log2(len(IP(i))) in [8, 16, 24]]
 for domain in datas[new_file].get('domain', {}):
     if domain.lower() == 'root.dn11':
         log.error('域名 `root.dn11` 为保留域名')
@@ -278,6 +280,8 @@ for domain in datas[new_file].get('domain', {}):
     if not datas[new_file]['domain'][domain]:
         log.error(f'域名 `{domain}` 未指定 NS')
         continue
+    if domain.lower().endswith('.in-addr.arpa') and domain.lower() not in allowed_rdns_domain:
+        log.error(f'rDNS 域名 `{domain}` 不在申请的 IP 段内')
     visited = set()
     dup = [x for x in datas[new_file]['domain'][domain] if x in visited or (visited.add(x) or False)]
     if dup:
