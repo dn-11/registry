@@ -1,0 +1,10 @@
+name: tyinno
+contact: "1033170470"
+ip:
+  - 172.16.58.0/24
+comment: HDU G区38号~喵
+monitor:
+  custom_node: |
+    "itemStyle": {
+            "color": "#d120a4"
+        }
