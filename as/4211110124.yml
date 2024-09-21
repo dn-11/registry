@@ -1,0 +1,10 @@
+name: Mitsuha
+contact: miyammitsuha@gmail.com
+ip:
+  - 172.16.60.0/24
+comment: 弗雷德
+monitor:
+  custom_node: |
+    "itemStyle": {
+        "color": "#66ccff"
+    }
