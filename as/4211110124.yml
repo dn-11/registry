@@ -1,7 +1,7 @@
 name: Mitsuha
 contact: miyammitsuha@gmail.com
 ip:
-  - 172.16.60.0/23
+  - 172.16.60.0/24
 comment: 杭州弗雷德&嘉兴
 monitor:
   custom_node: |
