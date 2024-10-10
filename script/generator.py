@@ -56,10 +56,14 @@ try:
 except FileExistsError:
     pass
 
+version = int(datetime.now().timestamp())
+with open('metadata/version', 'w') as f:
+    print(version, file=f)
+
 roa = {
     'metadata': {
         'counts': 0,
-        'generated': int(datetime.now().timestamp()),
+        'generated': version,
         'valid': 0,
     },
     'roas': [],
