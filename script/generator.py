@@ -56,10 +56,15 @@ try:
 except FileExistsError:
     pass
 
+version = int(datetime.now().timestamp())
+
+with open('metadata/version', 'w') as f:
+    print(version, file=f)
+
 roa = {
     'metadata': {
         'counts': 0,
-        'generated': int(datetime.now().timestamp()),
+        'generated': version,
         'valid': 0,
     },
     'roas': [],
@@ -174,6 +179,31 @@ if new_zone_text != old_zone_text:
     new_zone_text = '\n'.join(new_zone_text)
     with open('metadata/dn11.zone', 'w') as f:
         f.write(new_zone_text)
+
+ipcidr = IPy.IPSet([IP('172.16.0.0/16')])
+
+for i in abnormal_ips:
+    for j in i['网段']:
+        if j not in IP('172.16.0.0/16'):
+            ipcidr.add(j)
+
+with open('metadata/dn11_ipcidr.txt', 'w') as f:
+    for i in ipcidr:
+        print(i, file=f)
+
+ipranges = []
+for i in ipcidr:
+    start_ip = i[0]
+    end_ip = i[-1]
+
+    if not ipranges or ipranges[-1][1].int() + 1 != start_ip.int():
+        ipranges.append([start_ip, end_ip])
+    else:
+        ipranges[-1][1] = end_ip
+
+with open('metadata/dn11_iprange.txt', 'w') as f:
+    for i in ipranges:
+        print(f'{IPy.IP(i[0])}-{IPy.IP(i[1])}', file=f)
 
 normal_ips = [
     {
