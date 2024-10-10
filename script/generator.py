@@ -175,6 +175,11 @@ if new_zone_text != old_zone_text:
     with open('metadata/dn11.zone', 'w') as f:
         f.write(new_zone_text)
 
+ipcidr = IPy.IPSet([j for i in normal_ips + abnormal_ips for j in i['网段']] + [IP('172.16.255.0/24')])
+with open('metadata/dn11_ipcidr.txt', 'w') as f:
+    for i in ipcidr:
+        print(i, file=f)
+
 normal_ips = [
     {
         '归属': escape(i['归属']),
