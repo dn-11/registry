@@ -1,0 +1,58 @@
+name: mysid                                                                                             
+contact: 821675766@qq.com                                                                               
+ip:                                                                                                     
+  - 172.16.100.0/24                                                                                     
+comment: 广州vps                                                                                        
+monitor:
+  custom_node: |
+    "itemStyle": {
+        "color": {
+            "type": "linear",
+            "x": 0,
+            "y": 0,
+            "x2": 0,
+            "y2": 1,
+            "colorStops": [
+                {
+                    "offset": 0,
+                    "color": "#70B984"
+                },
+                {
+                    "offset": 0.11,
+                    "color": "#98CBA6"
+                },
+                {
+                    "offset": 0.22,
+                    "color": "#F3934A"
+                },
+                {
+                    "offset": 0.33,
+                    "color": "#F9CDAA"
+                },
+                                {
+                    "offset": 0.44,
+                    "color": "#EB547D"
+                },
+                {
+                    "offset": 0.55,
+                    "color": "#F191AB"
+                },
+                {
+                    "offset": 0.66,
+                    "color": "#9F6AA7"
+                },
+                {
+                    "offset": 0.77,
+                    "color": "#C19FC7"
+                },
+                {
+                    "offset": 0.88,
+                    "color": "#5476B3"
+                },
+                {
+                    "offset": 1,
+                    "color": "#829BC7"
+                }
+            ]
+        }
+    }
