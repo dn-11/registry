@@ -1,7 +1,7 @@
 name: mysid                                                                                             
 contact: 821675766@qq.com                                                                               
 ip:                                                                                                     
-  - 172.16.100.0/24                                                                                     
+  - 172.16.61.0/24                                                                                     
 comment: 广州vps                                                                                        
 monitor:
   custom_node: |
