@@ -6,5 +6,53 @@ comment: 杭州弗雷德&嘉兴
 monitor:
   custom_node: |
     "itemStyle": {
-        "color": "#66ccff"
+        "color": {
+            "type": "linear",
+            "x": 0,
+            "y": 0,
+            "x2": 0,
+            "y2": 1,
+            "colorStops": [
+                {
+                    "offset": 0,
+                    "color": "#5BCEFA"
+                },
+                {
+                    "offset": 0.19,
+                    "color": "#5BCEFA"
+                },
+                {
+                    "offset": 0.2,
+                    "color": "#F5A9B8"
+                },
+                {
+                    "offset": 0.39,
+                    "color": "#F5A9B8"
+                },
+                {
+                    "offset": 0.4,
+                    "color": "#FFFFFF"
+                },
+                {
+                    "offset": 0.59,
+                    "color": "#FFFFFF"
+                },
+                {
+                    "offset": 0.6,
+                    "color": "#F5A9B8"
+                },
+                {
+                    "offset": 0.79,
+                    "color": "#F5A9B8"
+                },
+                {
+                    "offset": 0.8,
+                    "color": "#5BCEFA"
+                },
+                {
+                    "offset": 1,
+                    "color": "#5BCEFA"
+                }
+            ]
+        }
     }
