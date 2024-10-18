@@ -18,32 +18,36 @@ monitor:
                     "color": "#5BCEFA"
                 },
                 {
-                    "offset": 0.24,
+                    "offset": 0.19,
                     "color": "#5BCEFA"
                 },
                 {
-                    "offset": 0.25,
+                    "offset": 0.2,
                     "color": "#F5A9B8"
                 },
                 {
-                    "offset": 0.49,
+                    "offset": 0.39,
                     "color": "#F5A9B8"
                 },
                 {
-                    "offset": 0.5,
+                    "offset": 0.4,
                     "color": "#FFFFFF"
                 },
                 {
-                    "offset": 0.74,
+                    "offset": 0.59,
                     "color": "#FFFFFF"
                 },
                 {
-                    "offset": 0.75,
+                    "offset": 0.6,
                     "color": "#F5A9B8"
                 },
                 {
-                    "offset": 0.99,
+                    "offset": 0.79,
                     "color": "#F5A9B8"
+                },
+                {
+                    "offset": 0.8,
+                    "color": "#5BCEFA"
                 },
                 {
                     "offset": 1,
