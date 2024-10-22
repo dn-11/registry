@@ -1,0 +1,10 @@
+name: Aster
+contact: qfwfq.qwq@gmail.com
+ip:
+  - 172.16.51.0/24
+comment: 杭电生活区16号楼
+monitor:
+  custom_node: |
+    "itemStyle": {
+            "color": "#39c5bb"
+        }

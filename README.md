@@ -17,17 +17,18 @@
 同时，Generator 会自动生成各类标准文件，如：
 
 - Monitor ([主站](https://status.dn11.top/) / [备站](https://monitor.dn11.baimeow.cn/))
-- 信息表 ([GitHub](https://github.com/hdu-dn11/metadata/blob/main/README.md))
+- 信息表 ([GitHub](https://github.com/dn-11/metadata/blob/main/README.md))
 - ROA
-  - Bird2 风格 ([GitHub](https://raw.githubusercontent.com/hdu-dn11/metadata/main/dn11_roa_bird2.conf) / [Tencent COS](https://metadata.dn11.baimeow.cn/dn11_roa_bird2.conf))
-  - GoRTR 风格 ([GitHub](https://raw.githubusercontent.com/hdu-dn11/metadata/main/dn11_roa_gortr.json) / [Tencent COS](https://metadata.dn11.baimeow.cn/dn11_roa_gortr.json))
-- Zone 文件 ([GitHub](https://raw.githubusercontent.com/hdu-dn11/metadata/main/dn11.zone) / [Tencent COS](https://metadata.dn11.baimeow.cn/dn11.zone))
+  - Bird2 风格 ([GitHub](https://raw.githubusercontent.com/dn-11/metadata/main/dn11_roa_bird2.conf) / [Tencent COS](https://metadata.dn11.baimeow.cn/dn11_roa_bird2.conf))
+  - GoRTR 风格 ([GitHub](https://raw.githubusercontent.com/dn-11/metadata/main/dn11_roa_gortr.json) / [Tencent COS](https://metadata.dn11.baimeow.cn/dn11_roa_gortr.json))
+- Zone 文件 ([GitHub](https://raw.githubusercontent.com/dn-11/metadata/main/dn11.zone) / [Tencent COS](https://metadata.dn11.baimeow.cn/dn11.zone))
+- IP-Cidr 文件 ([GitHub](https://raw.githubusercontent.com/dn-11/metadata/main/dn11_ipcidr.txt) / [Tencent COS](https://metadata.dn11.baimeow.cn/dn11_ipcidr.txt))
 
 ## How
 
 ### 成员注册
 
-您仅需要在 `as` 目录中创建一个 YAML 文件，文件名为 `<your-asn>.yml`，然后以 [`example.yml`](https://github.com/hdu-dn11/registry/blob/main/as/example.yml) 为模板填写。填写完成后提交一个 PR，根据 Checker 回复修改您的配置，然后等待管理员合并即可。
+您仅需要在 `as` 目录中创建一个 YAML 文件，文件名为 `<your-asn>.yml`，然后以 [`example.yml`](https://github.com/dn-11/registry/blob/main/as/example.yml) 为模板填写。填写完成后提交一个 PR，根据 Checker 回复修改您的配置，然后等待管理员合并即可。
 
 - `ASN`
 
@@ -59,7 +60,7 @@
 
   DN11 默认从 `172.16.0.0/16` 段中使用 `/24` 作为成员段。请优先选择该段内的最小一个未使用的 `/24` 地址。
 
-  您可在 [信息表](https://github.com/hdu-dn11/metadata/blob/main/README.md) 中查看已使用的 IP 段和下一个建议使用的网段。
+  您可在 [信息表](https://github.com/dn-11/metadata/blob/main/README.md) 中查看已使用的 IP 段和下一个建议使用的网段。
 
   如您确需使用其他 IP，请在群中说明情况。
 
@@ -70,6 +71,8 @@
   可在此处注册您的域名，以便我们为您生成 Zone 文件。
 
   如注册域名，则每个域名至少提供一个 NS 记录的 IP 地址。
+
+  此处也可用于注册 rDNS 域名，格式与普通域名相同。请注意，目前仅子网掩码为 `/8`、`/16`、`/24` 的 IP 地址可注册 rDNS 域名。
 
 - `ns`
 
@@ -107,7 +110,7 @@
 
 DN11 将 `172.16.255.0/24` 作为服务段，用于提供各类服务，每个服务持有一个 IP 地址。
 
-如需注册新服务，可修改 [`as/services.yml`](https://github.com/hdu-dn11/registry/blob/main/as/service.yml) 文件。
+如需注册新服务，可修改 [`as/services.yml`](https://github.com/dn-11/registry/blob/main/as/service.yml) 文件。
 
 DNS 服务使用 `172.16.255.53`，无需在此处注册。如需加入 Anycast，请参见下一章节。
 
@@ -131,7 +134,7 @@ DNS 服务使用 `172.16.255.53`，无需在此处注册。如需加入 Anycast�
 
 ### Anycast DNS 注册
 
-`172.16.255.53` 为 DN11 的 Anycast DNS。希望提供 Anycast 的成员需要修改 [`as/dns.yml`](https://github.com/hdu-dn11/registry/blob/main/as/dns.yml) 文件。
+`172.16.255.53` 为 DN11 的 Anycast DNS。希望提供 Anycast 的成员需要修改 [`as/dns.yml`](https://github.com/dn-11/registry/blob/main/as/dns.yml) 文件。
 
 - `name`
 
@@ -143,12 +146,34 @@ DNS 服务使用 `172.16.255.53`，无需在此处注册。如需加入 Anycast�
 
   **必填**
 
-  Anycast DNS 服务的单播 IP 地址
+  Anycast DNS 服务的 Unicast IP 地址
 
-- `root_domain`
+### IX 注册
+
+DN11 中有数个 IX 接入点。为避免 IX 内使用的网段被其他成员误注册，新部署 IX 接入点后需要修改 [`as/ix.yml`](https://github.com/dn-11/registry/blob/main/as/ix.yml) 文件以注册。
+
+- `name`
 
   **必填**
 
-  根域名前缀
+  IX 接入点名称
 
-  DN11 DNS 根域名为 `<prefix>.root.dn11`
+- `ip`
+
+  **必填**
+
+  IX 接入点 IP 段
+
+- `rs`
+
+  **选填**。但若有，则必须包含下面两项
+
+  IX RS 服务器配置
+
+  - `asn`
+
+    IX RS 服务器 ASN
+
+  - `ip`
+
+    IX RS 服务器 IP 地址

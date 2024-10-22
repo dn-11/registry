@@ -2,8 +2,10 @@
 import json
 import os
 import sys
+from math import log2
 from pathlib import Path
 
+import iplist
 import yaml
 from IPy import IP
 from netaddr import IPSet
@@ -49,18 +51,22 @@ if len(sys.argv) == 1:
     print('无修改的文件')
     exit(0)
 elif len(sys.argv) > 2:
-    log.error("每次 PR 仅支持修改一个文件")
+    log.error('每次 PR 仅支持修改一个文件')
 
 new_file = sys.argv[1]
 path = Path(new_file)
 
 if str(path.parent) != 'as':
-    log.error(f"修改了非 as 目录文件: `{new_file}`")
+    log.error(f'修改了非 as 目录文件: `{new_file}`')
 elif path.suffix != '.yml':
-    log.error(f"文件 `{new_file}` 非 yml 格式")
+    log.error(f'文件 `{new_file}` 非 yml 格式')
 elif path.stem == 'example':
-    log.warning("修改了 `example.yml` 文件")
-elif path.stem not in ['service', 'dns']:
+    log.warning('修改了 `example.yml` 文件')
+elif path.stem not in ['service', 'dns', 'ix']:
+    with open('as/ix.yml', 'r', encoding='utf8') as f:
+        data = yaml.load(f, Loader=yaml.Loader)
+        IX_IP = [IP(i['ip']) for i in data]
+        ixrs_asn = [i['rs']['asn'] for i in data if 'rs' in i]
     try:
         asn = int(path.stem)
         if not (4211110000 <= asn <= 4211119999 or 4220080000 <= asn <= 4220089999):
@@ -69,8 +75,10 @@ elif path.stem not in ['service', 'dns']:
             log.warning('不建议申请 `AS4211111111`，该 ASN 容易造成输入和识别困难')
         elif asn == 4211110101:
             log.error('`AS4211110101` 已被 Route Collector 服务占用')
+        elif asn in ixrs_asn:
+            log.error(f'`AS{asn}` 已被 IX RS 占用')
     except ValueError:
-        log.error(f"文件 `{new_file}` ASN 格式错误，必须为 `421111xxxx` 或 `422008xxxx` (Vidar 成员)")
+        log.error(f'文件 `{new_file}` ASN 格式错误，必须为 `421111xxxx` 或 `422008xxxx` (Vidar 成员)')
 log.try_exit()
 
 os.chdir('as')
@@ -110,6 +118,62 @@ if new_file == 'service':
         log.error('服务段有重复 IP：' + ', '.join(f'`{i}`' for i in sorted(list(dup))))
     log.exit()
 
+if new_file == 'ix':
+    with open('ix.yml', 'r', encoding='utf8') as f:
+        data = yaml.load(f, Loader=yaml.Loader)
+    for i in data:
+        if 'ip' not in i:
+            log.error('缺少 `ip` 字段')
+        elif type(i['ip']) is not str:
+            log.error('`ip` 字段必须为字符串')
+        else:
+            try:
+                ip = IP(i['ip'])
+                if any(ip in i for i in iplist.RESERVED):
+                    log.error(f'IP `{ip}` 为保留地址')
+                elif any(ip in i for i in iplist.NOT_RECOMMANDED):
+                    log.warning(f'IP `{ip}` 为不建议地址')
+            except ValueError:
+                log.error(f'IP `{ip}` 格式错误')
+        if 'name' not in i:
+            log.error('缺少 `name` 字段')
+        elif type(i['name']) is not str:
+            log.error('`name` 字段必须为字符串')
+        log.try_exit()
+        if 'rs' in i:
+            if type(i['rs']) is not dict:
+                log.error('`rs` 字段必须为字典')
+            elif 'ip' not in i['rs']:
+                log.error('`rs` 字段缺少 `ip` 子字段')
+            elif type(i['rs']['ip']) is not str:
+                log.error('`rs` 的 `ip` 子字段必须为字符串')
+            elif 'asn' not in i['rs']:
+                log.error('`rs` 字段缺少 `asn` 子字段')
+            else:
+                try:
+                    asn = int(i['rs']['asn'])
+                    if not (4211110000 <= asn <= 4211119999 or 4220080000 <= asn <= 4220089999):
+                        log.error(f'RS ASN `{asn}` 不为 `421111xxxx` 或 `422008xxxx`')
+                    elif os.path.exists(f'{asn}.yml'):
+                        log.error(f'RS ASN `{asn}` 已被用户申请')
+                except ValueError:
+                    log.error(f"RS ASN `{i['rs']['asn']}` 格式错误")
+                try:
+                    rsip = IP(i['rs']['ip'])
+                    if len(rsip) != 1:
+                        log.error(f"RS IP `{i['rs']['ip']}` 不为单 IP。对 RS 的申请必须是 /32")
+                    elif rsip not in IP(i['ip']):
+                        log.error(f"RS IP `{i['rs']['ip']}` 不在该 IX IP 段内")
+                except ValueError:
+                    log.error(f"RS IP `{i['rs']['ip']}` 格式错误")
+    ips = [i['ip'] for i in data]
+    if len(IPSet(ips).iter_cidrs()) != len(ips):
+        log.error('定义的 IX IP 有重叠')
+    asns = [i['rs']['asn'] for i in data if 'rs' in i]
+    if len(asns) != len(set(asns)):
+        log.error('定义的 RS ASN 有重复')
+    log.exit()
+
 datas = {}
 for asn in os.listdir():
     if asn.endswith('.yml') and (asn.startswith('421111') or asn.startswith('422008')):
@@ -134,11 +198,7 @@ if new_file == 'dns':
         if 'name' not in i:
             log.error('缺少 `name` 字段')
         elif type(i['name']) is not str:
-            log.error(f"IP `{str(ip)}` 的 `name` 字段不为字符串")
-        if 'root_domain' not in i:
-            log.error('缺少 `root_domain` 字段')
-        elif type(i['root_domain']) is not str:
-            log.error(f"IP `{str(ip)}` 的 `root_domain` 字段不为字符串")
+            log.error(f'IP `{str(ip)}` 的 `name` 字段不为字符串')
     log.exit()
 
 if 'ip' not in datas[new_file]:
@@ -192,33 +252,36 @@ for asn in datas:
     existed_ip.update({IP(i): asn for i in datas[asn]['ip']})
     existed_domain.update({i.lower(): asn for i in datas[asn].get('domain', {}).keys()})
     existed_ns.update({i.lower(): asn for i in datas[asn].get('ns', {}).keys()})
-if not all(i.endswith('.dn11') for i in datas[new_file].get('domain', {}).keys()):
-    log.error("域名必须以 .dn11 结尾")
+if not all(i.endswith('.dn11') or i.endswith('in-addr.arpa') for i in datas[new_file].get('domain', {}).keys()):
+    log.error('域名必须以 .dn11 结尾')
 for i in datas[new_file]['ip']:
     try:
         IP(i)
     except ValueError:
-        log.error(f"IP `{i}` 格式错误")
+        log.error(f'IP `{i}` 格式错误')
 for i in datas[new_file].get('ns', {}).values():
     try:
         IP(i)
     except ValueError:
-        log.error(f"NS IP `{i}` 格式错误")
+        log.error(f'NS IP `{i}` 格式错误')
 log.try_exit()
 for ip in datas[new_file]['ip']:
     for eip in existed_ip:
         if IP(ip) in eip:
-            log.error(f"IP `{ip}` 已被 `{existed_ip[eip]}` 持有")
+            log.warning(f'IP `{ip}` 在由 `{existed_ip[eip]}` 持有的 `{eip}` 段内')
         elif eip in IP(ip):
-            log.error(f"IP `{ip}` 与 `{existed_ip[eip]}` 持有的 `{eip}` 重叠")
+            log.warning(f'IP `{ip}` 与 `{existed_ip[eip]}` 持有的 `{eip}` 重叠')
+allowed_rdns_domain = [IP(i).reverseName()[:-1] for i in datas[new_file]['ip'] if log2(len(IP(i))) in [8, 16, 24]]
 for domain in datas[new_file].get('domain', {}):
     if domain.lower() == 'root.dn11':
-        log.error("域名 `root.dn11` 为保留域名")
+        log.error('域名 `root.dn11` 为保留域名')
     elif domain.lower() in existed_domain:
-        log.error(f"域名 `{domain}` 已被 `{existed_domain[domain.lower()]}` 持有")
+        log.error(f'域名 `{domain}` 已被 `{existed_domain[domain.lower()]}` 持有')
     if not datas[new_file]['domain'][domain]:
-        log.error(f"域名 `{domain}` 未指定 NS")
+        log.error(f'域名 `{domain}` 未指定 NS')
         continue
+    if domain.lower().endswith('.in-addr.arpa') and domain.lower() not in allowed_rdns_domain:
+        log.error(f'rDNS 域名 `{domain}` 不在申请的 IP 段内')
     visited = set()
     dup = [x for x in datas[new_file]['domain'][domain] if x in visited or (visited.add(x) or False)]
     if dup:
@@ -237,63 +300,13 @@ net172.sort()
 net172_new = set()
 for i in datas[new_file]['ip']:
     ip = IP(i)
-    reserved = [
-        IP('10.0.0.0/24'),
-        IP('10.42.0.0/16'),
-        IP('10.43.0.0/16'),
-        IP('172.16.0.0/24'),
-        IP('172.16.200.0/24'),
-        IP('172.16.254.0/24'),
-        IP('172.26.0.0/16'),
-        IP('172.27.0.0/16'),
-        IP('192.168.1.0/24'),
-    ]
-    not_recommended = [IP('172.16.128.0/24'), IP('172.16.129.0/24')]
-    publicip = [
-        IP('0.0.0.0/5'),
-        IP('8.0.0.0/7'),
-        IP('11.0.0.0/8'),
-        IP('12.0.0.0/6'),
-        IP('16.0.0.0/4'),
-        IP('32.0.0.0/3'),
-        IP('64.0.0.0/3'),
-        IP('96.0.0.0/6'),
-        IP('100.0.0.0/10'),
-        IP('100.128.0.0/9'),
-        IP('101.0.0.0/8'),
-        IP('102.0.0.0/7'),
-        IP('104.0.0.0/5'),
-        IP('112.0.0.0/4'),
-        IP('128.0.0.0/3'),
-        IP('160.0.0.0/5'),
-        IP('168.0.0.0/6'),
-        IP('172.0.0.0/12'),
-        IP('172.32.0.0/11'),
-        IP('172.64.0.0/10'),
-        IP('172.128.0.0/9'),
-        IP('173.0.0.0/8'),
-        IP('174.0.0.0/7'),
-        IP('176.0.0.0/4'),
-        IP('192.0.0.0/9'),
-        IP('192.128.0.0/11'),
-        IP('192.160.0.0/13'),
-        IP('192.169.0.0/16'),
-        IP('192.170.0.0/15'),
-        IP('192.172.0.0/14'),
-        IP('192.176.0.0/12'),
-        IP('192.192.0.0/10'),
-        IP('193.0.0.0/8'),
-        IP('194.0.0.0/7'),
-        IP('196.0.0.0/6'),
-        IP('200.0.0.0/5'),
-        IP('208.0.0.0/4'),
-        IP('224.0.0.0/3'),
-    ]
-    if any(ip in i for i in publicip):
+    if any(ip in i for i in IX_IP):
+        log.error(f'IP `{i}` 被定义为 IX IP')
+    elif any(ip in i for i in iplist.PUBLIC):
         log.error(f'IP `{i}` 为公网地址')
-    elif any(ip in i for i in reserved):
+    elif any(ip in i for i in iplist.RESERVED):
         log.error(f'IP `{i}` 为保留地址')
-    elif any(ip in i for i in not_recommended):
+    elif any(ip in i for i in iplist.NOT_RECOMMANDED):
         log.warning(f'IP `{i}` 为不建议地址')
     elif ip not in IP('172.16.0.0/16'):
         log.warning(f'IP `{i}` 不在 DN11 常规段内')

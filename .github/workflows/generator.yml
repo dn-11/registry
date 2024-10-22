@@ -30,7 +30,7 @@ jobs:
         uses: actions/checkout@main
         with:
           token: ${{ secrets.GH_TOKEN }}
-          repository: hdu-dn11/metadata
+          repository: dn-11/metadata
           path: metadata.old
           sparse-checkout: |
             dn11.zone
@@ -49,7 +49,7 @@ jobs:
           git add *
           git commit -m "Sync"
           git branch -M main
-          git remote add origin https://${{ secrets.GH_TOKEN }}@github.com/hdu-dn11/metadata.git
+          git remote add origin https://${{ secrets.GH_TOKEN }}@github.com/dn-11/metadata.git
           git push --force -u origin main
       - name: Prepare for COS Upload
         run: |
