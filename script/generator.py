@@ -88,6 +88,8 @@ with open('metadata/dn11.zone', 'w') as f:
     )
 with open('metadata/dn11_roa_bird2.conf', 'w') as f:
     for ip in iplist.RESERVED + iplist.PUBLIC:
+        if ip == IP('224.0.0.0/4'):
+            continue
         print(f'route {str(ip)} max 32 as 4200000000;', file=f)
         roa['roas'].append({'prefix': str(ip), 'maxLength': 32, 'asn': 'AS4200000000'})
         roa['metadata']['counts'] += 1
