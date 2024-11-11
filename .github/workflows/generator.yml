@@ -36,6 +36,7 @@ jobs:
           path: metadata.old
           sparse-checkout: |
             dn11.zone
+            dn11-rdns.zone
           sparse-checkout-cone-mode: false
       - name: Run Generator
         run: |

@@ -252,7 +252,7 @@ for asn in datas:
     existed_ip.update({IP(i): asn for i in datas[asn]['ip']})
     existed_domain.update({i.lower(): asn for i in datas[asn].get('domain', {}).keys()})
     existed_ns.update({i.lower(): asn for i in datas[asn].get('ns', {}).keys()})
-if not all(i.endswith('.dn11') or i.endswith('in-addr.arpa') for i in datas[new_file].get('domain', {}).keys()):
+if not all(i.endswith('.dn11') or i.endswith('.in-addr.arpa') for i in datas[new_file].get('domain', {}).keys()):
     log.error('域名必须以 .dn11 结尾')
 for i in datas[new_file]['ip']:
     try:
