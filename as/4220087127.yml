@@ -1,0 +1,10 @@
+name: Kiracoon
+contact: kiramiby@gmail.com
+ip:
+  - 172.16.17.0/24
+comment: Kira
+monitor:
+  custom_node: |
+    "itemStyle": {
+            "color": "#171798"
+        }
