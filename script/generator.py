@@ -69,25 +69,43 @@ roa = {
     'roas': [],
 }
 
-with open('metadata.old/dn11.zone', 'r') as f:
-    old_zone_text = f.read()
-old_zone_serial = next(i for i in old_zone_text.split('\n') if 'SOA' in i)
-old_zone_serial = old_zone_serial.split()[6]
 today = datetime.today().strftime('%Y%m%d')
-if old_zone_serial.startswith(today):
-    new_zone_serial = str(int(old_zone_serial) + 1)
+with open('metadata.old/dn11.zone', 'r') as f:
+    old_dn11_zone_text = f.read()
+old_dn11_zone_serial = next(i for i in old_dn11_zone_text.split('\n') if 'SOA' in i)
+old_dn11_zone_serial = old_dn11_zone_serial.split()[6]
+if old_dn11_zone_serial.startswith(today):
+    new_dn11_zone_serial = str(int(old_dn11_zone_serial) + 1)
 else:
-    new_zone_serial = today + '01'
+    new_dn11_zone_serial = today + '01'
 with open('metadata/dn11.zone', 'w') as f:
     print(
         '$ORIGIN .\n'
         'dn11                    300     IN      SOA     '
-        f'a.root.dn11 hostmaster.dn11 {old_zone_serial} 60 60 604800 60\n'
+        f'root.dn11 hostmaster.dn11 {old_dn11_zone_serial} 60 60 604800 60\n'
         'dn11                    300     IN      NS      172.16.255.53',
+        file=f,
+    )
+with open('metadata.old/dn11-rdns.zone', 'r') as f:
+    old_rdns_zone_text = f.read()
+old_rdns_zone_serial = next(i for i in old_rdns_zone_text.split('\n') if 'SOA' in i)
+old_rdns_zone_serial = old_rdns_zone_serial.split()[6]
+if old_rdns_zone_serial.startswith(today):
+    new_rdns_zone_serial = str(int(old_rdns_zone_serial) + 1)
+else:
+    new_rdns_zone_serial = today + '01'
+with open('metadata/dn11-rdns.zone', 'w') as f:
+    print(
+        '$ORIGIN .\n'
+        'in-addr.arpa                    300     IN      SOA     '
+        f'root.dn11 hostmaster.dn11 {old_rdns_zone_serial} 60 60 604800 60\n'
+        'in-addr.arpa                    300     IN      NS      172.16.255.53',
         file=f,
     )
 with open('metadata/dn11_roa_bird2.conf', 'w') as f:
     for ip in iplist.RESERVED + iplist.PUBLIC:
+        if ip == IP('224.0.0.0/4'):
+            continue
         print(f'route {str(ip)} max 32 as 4200000000;', file=f)
         roa['roas'].append({'prefix': str(ip), 'maxLength': 32, 'asn': 'AS4200000000'})
         roa['metadata']['counts'] += 1
@@ -145,7 +163,11 @@ for asn, data in datas.items():
             if 'domain' in data:
                 for domain, nss in data['domain'].items():
                     for ns in nss:
-                        print(f'{domain.ljust(24)}60      IN      NS      {ns}', file=f)
+                        if domain.endswith('.in-addr.arpa'):
+                            with open('metadata/dn11-rdns.zone', 'a') as f2:
+                                print(f'{domain.ljust(32)}60      IN      NS      {ns}', file=f2)
+                        else:
+                            print(f'{domain.ljust(24)}60      IN      NS      {ns}', file=f)
             if 'ns' in data:
                 for server, address in data['ns'].items():
                     print(f'{server.ljust(24)}60      IN      A       {address}', file=f)
@@ -171,13 +193,21 @@ with open('metadata/dn11_roa_bird2.conf', 'a') as f:
 with open('metadata/dn11_roa_gortr.json', 'w') as f:
     json.dump(roa, f, ensure_ascii=True, separators=(',', ':'))
 with open('metadata/dn11.zone', 'r') as f:
-    new_zone_text = f.read()
-if new_zone_text != old_zone_text:
-    new_zone_text = new_zone_text.split('\n')
-    new_zone_text[1] = new_zone_text[1].replace(old_zone_serial, new_zone_serial)
-    new_zone_text = '\n'.join(new_zone_text)
+    new_dn11_zone_text = f.read()
+if new_dn11_zone_text != old_dn11_zone_text:
+    new_dn11_zone_text = new_dn11_zone_text.split('\n')
+    new_dn11_zone_text[1] = new_dn11_zone_text[1].replace(old_dn11_zone_serial, new_dn11_zone_serial)
+    new_dn11_zone_text = '\n'.join(new_dn11_zone_text)
     with open('metadata/dn11.zone', 'w') as f:
-        f.write(new_zone_text)
+        f.write(new_dn11_zone_text)
+with open('metadata/dn11-rdns.zone', 'r') as f:
+    new_rdns_zone_text = f.read()
+if new_rdns_zone_text != old_rdns_zone_text:
+    new_rdns_zone_text = new_rdns_zone_text.split('\n')
+    new_rdns_zone_text[1] = new_rdns_zone_text[1].replace(old_rdns_zone_serial, new_rdns_zone_serial)
+    new_rdns_zone_text = '\n'.join(new_rdns_zone_text)
+    with open('metadata/dn11-rdns.zone', 'w') as f:
+        f.write(new_rdns_zone_text)
 
 ipcidr = IPy.IPSet([j for i in normal_ips + abnormal_ips for j in i['网段']] + [IP('172.16.255.0/24')])
 with open('metadata/dn11_ipcidr.txt', 'w') as f:

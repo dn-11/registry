@@ -1,0 +1,10 @@
+name: Nan0in
+contact: jiangnan.yeqianyu@gmail.com
+ip:
+  - 172.16.63.0/24
+comment: 杭电生活区4号楼隐藏区域
+monitor:
+  custom_node: |
+    "itemStyle": {
+            "color": "#1f1e33"
+        }
