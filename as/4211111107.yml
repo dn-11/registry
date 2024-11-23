@@ -1,8 +1,8 @@
 name: stydxm
-contact: i@stydxm.com
+contact: stydxm@outlook.com
 ip:
   - 172.16.21.0/24
-comment: 浙江理工大学下沙校区生活2区2号楼
+comment: 浙江理工大学下沙校区23号楼
 monitor:
   custom_node: |
     "itemStyle": {

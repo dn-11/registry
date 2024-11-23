@@ -21,7 +21,9 @@
 - ROA
   - Bird2 风格 ([GitHub](https://raw.githubusercontent.com/dn-11/metadata/main/dn11_roa_bird2.conf) / [Tencent COS](https://metadata.dn11.baimeow.cn/dn11_roa_bird2.conf))
   - GoRTR 风格 ([GitHub](https://raw.githubusercontent.com/dn-11/metadata/main/dn11_roa_gortr.json) / [Tencent COS](https://metadata.dn11.baimeow.cn/dn11_roa_gortr.json))
-- Zone 文件 ([GitHub](https://raw.githubusercontent.com/dn-11/metadata/main/dn11.zone) / [Tencent COS](https://metadata.dn11.baimeow.cn/dn11.zone))
+- Zone 文件
+  - DN11 Zone ([GitHub](https://raw.githubusercontent.com/dn-11/metadata/main/dn11.zone) / [Tencent COS](https://metadata.dn11.baimeow.cn/dn11.zone))
+  - rDNS Zone ([GitHub](https://raw.githubusercontent.com/dn-11/metadata/main/dn11-rdns.zone) / [Tencent COS](https://metadata.dn11.baimeow.cn/dn11-rdns.zone))
 - IP-Cidr 文件 ([GitHub](https://raw.githubusercontent.com/dn-11/metadata/main/dn11_ipcidr.txt) / [Tencent COS](https://metadata.dn11.baimeow.cn/dn11_ipcidr.txt))
 
 ## How
