@@ -1,7 +1,7 @@
 name: tenonet
 contact: support@tenotek.com
 ip:
-  - 172.16.45.0/24
+  - 172.16.39.0/24
 comment: 浙江杭州tenonet
 monitor:
   custom_node: |
