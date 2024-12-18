@@ -192,6 +192,9 @@ with open('metadata/dn11_roa_bird2.conf', 'a') as f:
 
 with open('metadata/dn11_roa_gortr.json', 'w') as f:
     json.dump(roa, f, ensure_ascii=True, separators=(',', ':'))
+roa = {'roas': [{'prefix': i['prefix'], 'maxLength': i['maxLength'], 'asn': int(i['asn'][2:])} for i in roa['roas']]}
+with open('metadata/dn11_roa_stayrtr.json', 'w') as f:
+    json.dump(roa, f, ensure_ascii=True, separators=(',', ':'))
 with open('metadata/dn11.zone', 'r') as f:
     new_dn11_zone_text = f.read()
 if new_dn11_zone_text != old_dn11_zone_text:
