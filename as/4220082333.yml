@@ -1,0 +1,9 @@
+name: l1nk
+contact: l1nk@vidar.club
+ip:
+  - 172.16.66.0/24
+monitor:
+  custom_node: |
+    "itemStyle": {
+        "color": "#03a9f4"
+    }
