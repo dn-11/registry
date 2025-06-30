@@ -5,10 +5,11 @@ import sys
 from math import log2
 from pathlib import Path
 
-import iplist
 import yaml
 from IPy import IP
 from netaddr import IPSet
+
+import iplist
 
 
 class log:

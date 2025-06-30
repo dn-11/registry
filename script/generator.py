@@ -4,10 +4,11 @@ import os
 from datetime import datetime
 from html import escape
 
-import iplist
 import IPy
 import yaml
 from py_markdown_table.markdown_table import markdown_table
+
+import iplist
 
 
 def IP(ip):
