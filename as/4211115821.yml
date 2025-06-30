@@ -2,7 +2,7 @@ name: Ljcbaby
 contact: 46277145+ljcbaby@users.noreply.github.com
 
 ip:
-  - 10.130.0.0/20
+  - 172.16.68.0/22
   - 192.168.3.0/24
 
 comment: |
