@@ -129,7 +129,7 @@ for asn, data in datas.items():
                 '备注': data.get('comment', ''),
             }
         )
-        net172_existed.update(int(str(ip)[:-3].split('.')[2]) for ip in net_172)
+        net172_existed.update(i for i in range(1, 256) if any(IP(f'172.16.{i}.0/24') in j for j in net_172))
     if len(net_non172) > 0:
         abnormal_ips.append(
             {
