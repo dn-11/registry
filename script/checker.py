@@ -296,9 +296,7 @@ for ns in datas[new_file].get('domain', {}).values():
     for i in ns:
         if i.lower() not in existed_ns:
             log.error(f'NS `{i}` 未被定义')
-net172_available = set(i for i in range(1, 256) if all(IP(f'172.16.{i}.0/24') not in j for j in existed_ip))
 net172_new = set()
-ignore_suggestion = False
 for i in datas[new_file]['ip']:
     ip = IP(i)
     if any(ip in i for i in IX_IP):
@@ -315,13 +313,16 @@ for i in datas[new_file]['ip']:
         log.error('服务段请在 `service.yml` 中申请')
     elif len(ip) != 256:
         log.warning(f'IP `{i}` 不持有一个 /24 段。对常规段的申请一般应为 /24 段')
-        ignore_suggestion = True
+        existed_ip.update({ip: None})
     else:
         net172_new.update(i for i in range(1, 256) if IP(f'172.16.{i}.0/24') in ip)
-if not ignore_suggestion and net172_new != net172_available:
+net172_available = [i for i in range(1, 256) if all(IP(f'172.16.{i}.0/24') not in j for j in existed_ip)]
+net172_available = set(net172_available[: len(net172_new)])
+if net172_new != net172_available:
     extra = [f'172.16.{i}.0/24' for i in net172_new - net172_available]
     want = [f'172.16.{i}.0/24' for i in net172_available - net172_new]
-    log.warning(f'对于申请的 `{", ".join(sorted(extra))}`，建议改为申请 `{", ".join(sorted(want))}`')
+    log.warning(f'对于申请的 {", ".join(f'`{i}`' for i in sorted(extra))}，'
+                f'建议改为申请 {", ".join(f'`{i}`' for i in sorted(want))}')
 if 'appendix' in datas[new_file].get('monitor', {}):
     try:
         json.loads('{' + datas[new_file]['monitor']['appendix'] + '}')
