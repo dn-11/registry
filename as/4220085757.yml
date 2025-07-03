@@ -1,0 +1,27 @@
+name: Shiori
+contact: mojin5347@gmail.com
+ip:
+  - 172.16.47.0/24
+monitor:
+  custom_node: |
+    "itemStyle": {
+            "color": "#c2cc7a",
+            "borderColor": {
+            "type": "radial",
+            "x": 0.5,
+            "y": 0.5,
+            "r": 0.5,
+            "colorStops": [
+                {
+                    "offset": 1,
+                    "color": "#c2cc7a"
+                }
+            ]
+        },
+        "borderWidth": 1,
+        "borderCap": "round",
+        "shadowBlur": 10,
+        "shadowColor": "#c2cc7a",
+        "shadowOffsetX": 0,
+        "shadowOffsetY": 0
+        }
