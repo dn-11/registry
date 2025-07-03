@@ -179,7 +179,7 @@ with open('metadata/dn11_roa_bird2.conf', 'a') as f:
             roa['roas'].append({'prefix': str(IP(s['ip'])), 'maxLength': 32, 'asn': f'AS{asn}'})
             roa['metadata']['counts'] += 1
             roa['metadata']['valid'] += 1
-            print(f'route {str(IP(s["ip"]))} max 32 as {asn};', file=f)
+            print(f'route {str(IP(s['ip']))} max 32 as {asn};', file=f)
     for asn in [i['asn'] for i in dns]:
         roa['roas'].append({'prefix': '172.16.255.53/32', 'maxLength': 32, 'asn': f'AS{asn}'})
         roa['metadata']['counts'] += 1
@@ -221,7 +221,7 @@ with open('metadata/dn11_ipcidr.txt', 'w') as f:
 normal_ips = [
     {
         '归属': escape(i['归属']),
-        'ASN': f"`{i['ASN']}`",
+        'ASN': f'`{i['ASN']}`',
         '网段': '<br>'.join(f'`{str(j)}`' for j in i['网段']),
         '备注': '<br>'.join(escape(i) for i in str(i['联系方式']).split('\n') + str(i['备注']).split('\n')),
     }
@@ -230,7 +230,7 @@ normal_ips = [
 abnormal_ips = [
     {
         '归属': escape(i['归属']),
-        'ASN': f"`{i['ASN']}`",
+        'ASN': f'`{i['ASN']}`',
         '网段': '<br>'.join(f'`{str(j)}`' for j in i['网段']),
         '备注': '<br>'.join(escape(i) for i in str(i['联系方式']).split('\n') + str(i['备注']).split('\n')),
     }
@@ -239,16 +239,16 @@ abnormal_ips = [
 dns_ips = [
     {
         '归属': escape(i['name']),
-        'ASN': f"`{i['asn']}`",
-        'Unicast IP': f"`{str(IPy.IP(i['ip']))}`",
+        'ASN': f'`{i['asn']}`',
+        'Unicast IP': f'`{str(IPy.IP(i['ip']))}`',
     }
     for i in sorted(dns, key=lambda x: int(x['asn']))
 ]
 ix_ips = [
     {
         '归属': escape(i['name']),
-        '网段': f"`{str(IPy.IP(i['ip']))}`",
-        'RS': f"`{i['rs']['asn']}`<br>`{str(IPy.IP(i['rs']['ip']))}`" if 'rs' in i else 'N/A',
+        '网段': f'`{str(IPy.IP(i['ip']))}`',
+        'RS': f'`{i['rs']['asn']}`<br>`{str(IPy.IP(i['rs']['ip']))}`' if 'rs' in i else 'N/A',
     }
     for i in sorted(ix, key=lambda x: IP(x['ip']).int())
 ]
