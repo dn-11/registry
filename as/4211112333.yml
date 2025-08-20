@@ -1,0 +1,5 @@
+name: salted-fish
+contact: lc7029@qq.com
+ip:
+  - 172.16.233.0/24
+comment: 北京多线bgp
