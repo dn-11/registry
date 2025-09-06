@@ -1,7 +1,7 @@
 name: HairoYuki
 contact: yuki@bakayang.moe
 ip:
-  - 172.16.69.0/24
+  - 172.16.72.0/24
 #  - 172.16.?.0/24
 domain:
   yuki.dn11:
@@ -9,7 +9,7 @@ domain:
 #  moeinf.dn11:
 #    - ns1.moeinf.dn11
 ns:
-  ns1.yuki.dn11: 172.16.69.53
+  ns1.yuki.dn11: 172.16.72.53
 #  ns1.moeinf.dn11: 172.16.?.53
 comment: MoeInfinity Network
 monitor:
