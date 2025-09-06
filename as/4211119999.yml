@@ -1,0 +1,23 @@
+name: HairoYuki
+contact: yuki@bakayang.moe
+ip:
+  - 172.16.72.0/24
+#  - 172.16.?.0/24
+domain:
+  yuki.dn11:
+    - ns1.yuki.dn11
+#  moeinf.dn11:
+#    - ns1.moeinf.dn11
+ns:
+  ns1.yuki.dn11: 172.16.72.53
+#  ns1.moeinf.dn11: 172.16.?.53
+comment: MoeInfinity Network
+monitor:
+  custom_node: |
+    "itemStyle": {
+        "color": "#3b71eb",
+        "shadowBlur": 10,
+        "shadowColor": "#ed86f1",
+        "shadowOffsetX": 0,
+        "shadowOffsetY": 0
+    }
