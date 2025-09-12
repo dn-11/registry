@@ -26,10 +26,6 @@
 
   - StayRTR 风格 ([GitHub](https://raw.githubusercontent.com/dn-11/metadata/main/dn11_roa_stayrtr.json) / [Tencent COS](https://metadata.dn11.baimeow.cn/dn11_roa_stayrtr.json))
 
-  - ~~GoRTR 风格 ([GitHub](https://raw.githubusercontent.com/dn-11/metadata/main/dn11_roa_gortr.json) / [Tencent COS](https://metadata.dn11.baimeow.cn/dn11_roa_gortr.json))~~
-
-    【[GoRTR 项目已被弃用，推荐更换为 StayRTR](https://github.com/cloudflare/gortr?tab=readme-ov-file#deprecation-notice)】
-
 - Zone 文件
 
   - DN11 Zone ([GitHub](https://raw.githubusercontent.com/dn-11/metadata/main/dn11.zone) / [Tencent COS](https://metadata.dn11.baimeow.cn/dn11.zone))
