@@ -76,6 +76,8 @@ elif path.stem not in ['service', 'dns', 'ix']:
             log.warning('不建议申请 `AS4211111111`，该 ASN 容易造成输入和识别困难')
         elif asn == 4211110101:
             log.error('`AS4211110101` 已被 Route Collector 服务占用')
+        elif asn == 4211110102:
+            log.error('`AS4211110102` 已被 Route Collector 服务占用')
         elif asn in ixrs_asn:
             log.error(f'`AS{asn}` 已被 IX RS 占用')
     except ValueError:
