@@ -1,0 +1,12 @@
+name: Macarons
+contact: "2712259702 & macarons1119@gmail.com"
+ip:
+  - 172.16.77.0/24
+domain:
+  potat0.dn11:
+    - ns1.Macarons.dn11
+  18.10.in-addr.arpa:
+    - ns1.Macarons.dn11
+ns:
+  ns1.potat0.dn11: 10.18.0.53
+comment: 11北621宿舍3号
