@@ -1,9 +1,0 @@
-name: ib
-contact: 1228320287@qq.com  
-ip:
-  - 172.16.12.0/24
-domain:
-  ib.dn11: 
-    - ns1.ib.dn11
-ns:
-  ns1.ib.dn11: 172.16.12.11
