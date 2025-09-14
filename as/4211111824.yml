@@ -5,9 +5,6 @@ ip:
 domain:
   smallfang.dn11:
     - ns1.smalfang.dn11
-    - ns1.baimeow.dn11
-  18.10.in-addr.arpa:
-    - ns1.potat0.dn11
 ns:
   ns1.smallfang.dn11: 172.16.12.1
 comment: 杭电生活区5号楼北
