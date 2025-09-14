@@ -6,5 +6,5 @@ domain:
   smallfang.dn11:
     - ns1.smalfang.dn11
 ns:
-  ns1.smallfang.dn11: 172.16.12.1
+  ns1.smallfang.dn11: 172.16.12.12
 comment: 杭电生活区5号楼北
