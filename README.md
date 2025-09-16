@@ -38,7 +38,7 @@
 
 ### 成员注册
 
-您仅需要在 `as` 目录中创建一个 YAML 文件，文件名为 `<your-asn>.yml`，然后以 [`example.yml`](https://github.com/dn-11/registry/blob/main/as/example.yml) 为模板填写。填写完成后提交一个 PR，根据 Checker 回复修改您的配置，然后等待管理员合并即可。
+您仅需要在 `as` 目录中创建一个 YAML 文件，文件名为 `<your-asn>.yml`，然后以 [`example.minimal.yml` (推荐的最小配置)](https://github.com/dn-11/registry/blob/main/as/example.minimal.yml) 为模板填写（对于新成员，不建议从 `example.full.yml` 开始。按需申请资源，不要“未雨绸缪”）。填写完成后提交一个 PR，根据 Checker 回复修改您的配置，然后等待管理员合并即可。
 
 - `ASN`
 

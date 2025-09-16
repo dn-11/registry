@@ -61,8 +61,10 @@ if str(path.parent) != 'as':
     log.error(f'修改了非 as 目录文件: `{new_file}`')
 elif path.suffix != '.yml':
     log.error(f'文件 `{new_file}` 非 yml 格式')
-elif path.stem == 'example':
-    log.warning('修改了 `example.yml` 文件')
+elif path.stem == 'example.minimal':
+    log.warning('修改了 `example.minimal.yml` 文件')
+elif path.stem == 'example.full':
+    log.warning('修改了 `example.full.yml` 文件')
 elif path.stem not in ['service', 'dns', 'ix']:
     with open('as/ix.yml', 'r', encoding='utf8') as f:
         data = yaml.load(f, Loader=yaml.Loader)
