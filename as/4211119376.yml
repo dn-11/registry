@@ -1,0 +1,58 @@
+name: 0xa7973908
+contact: maximwang110@gmail.com
+ip:
+  - 172.16.81.0/24
+comment: Minhang District, Shanghai, P.R.China
+monitor:
+  custom_node: |
+    "itemStyle": {
+        "color": {
+            "type": "linear",
+            "x": 0,
+            "y": 0,
+            "x2": 0,
+            "y2": 1,
+            "colorStops": [
+                {
+                    "offset": 0,
+                    "color": "#DD0088"
+                },
+                {
+                    "offset": 0.19,
+                    "color": "#881188"
+                },
+                {
+                    "offset": 0.2,
+                    "color": "#BBBBBB"
+                },
+                {
+                    "offset": 0.39,
+                    "color": "#DD2200"
+                },
+                {
+                    "offset": 0.4,
+                    "color": "#00AABB"
+                },
+                {
+                    "offset": 0.59,
+                    "color": "#FF5522"
+                },
+                {
+                    "offset": 0.6,
+                    "color": "#0077DD"
+                },
+                {
+                    "offset": 0.79,
+                    "color": "#FF55BB"
+                },
+                {
+                    "offset": 0.8,
+                    "color": "#FFCC11"
+                },
+                {
+                    "offset": 1,
+                    "color": "#AA66DD"
+                }
+            ]
+        }
+    }
