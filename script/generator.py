@@ -4,10 +4,11 @@ import os
 from datetime import datetime
 from html import escape
 
-import iplist
 import IPy
 import yaml
 from py_markdown_table.markdown_table import markdown_table
+
+import iplist
 
 
 def IP(ip):
@@ -129,7 +130,7 @@ for asn, data in datas.items():
                 '备注': data.get('comment', ''),
             }
         )
-        net172_existed.update(int(str(ip)[:-3].split('.')[2]) for ip in net_172)
+        net172_existed.update(i for i in range(1, 256) if any(IP(f'172.16.{i}.0/24') in j for j in net_172))
     if len(net_non172) > 0:
         abnormal_ips.append(
             {
@@ -178,7 +179,7 @@ with open('metadata/dn11_roa_bird2.conf', 'a') as f:
             roa['roas'].append({'prefix': str(IP(s['ip'])), 'maxLength': 32, 'asn': f'AS{asn}'})
             roa['metadata']['counts'] += 1
             roa['metadata']['valid'] += 1
-            print(f'route {str(IP(s["ip"]))} max 32 as {asn};', file=f)
+            print(f'route {str(IP(s['ip']))} max 32 as {asn};', file=f)
     for asn in [i['asn'] for i in dns]:
         roa['roas'].append({'prefix': '172.16.255.53/32', 'maxLength': 32, 'asn': f'AS{asn}'})
         roa['metadata']['counts'] += 1
@@ -190,7 +191,8 @@ with open('metadata/dn11_roa_bird2.conf', 'a') as f:
         roa['metadata']['valid'] += 1
         print(f'route {str(IP(ixrs_ip))} max 32 as {ixrs_asn};', file=f)
 
-with open('metadata/dn11_roa_gortr.json', 'w') as f:
+roa = {'roas': [{'prefix': i['prefix'], 'maxLength': i['maxLength'], 'asn': int(i['asn'][2:])} for i in roa['roas']]}
+with open('metadata/dn11_roa_stayrtr.json', 'w') as f:
     json.dump(roa, f, ensure_ascii=True, separators=(',', ':'))
 with open('metadata/dn11.zone', 'r') as f:
     new_dn11_zone_text = f.read()
@@ -217,7 +219,7 @@ with open('metadata/dn11_ipcidr.txt', 'w') as f:
 normal_ips = [
     {
         '归属': escape(i['归属']),
-        'ASN': f"`{i['ASN']}`",
+        'ASN': f'`{i['ASN']}`',
         '网段': '<br>'.join(f'`{str(j)}`' for j in i['网段']),
         '备注': '<br>'.join(escape(i) for i in str(i['联系方式']).split('\n') + str(i['备注']).split('\n')),
     }
@@ -226,7 +228,7 @@ normal_ips = [
 abnormal_ips = [
     {
         '归属': escape(i['归属']),
-        'ASN': f"`{i['ASN']}`",
+        'ASN': f'`{i['ASN']}`',
         '网段': '<br>'.join(f'`{str(j)}`' for j in i['网段']),
         '备注': '<br>'.join(escape(i) for i in str(i['联系方式']).split('\n') + str(i['备注']).split('\n')),
     }
@@ -235,16 +237,16 @@ abnormal_ips = [
 dns_ips = [
     {
         '归属': escape(i['name']),
-        'ASN': f"`{i['asn']}`",
-        'Unicast IP': f"`{str(IPy.IP(i['ip']))}`",
+        'ASN': f'`{i['asn']}`',
+        'Unicast IP': f'`{str(IPy.IP(i['ip']))}`',
     }
     for i in sorted(dns, key=lambda x: int(x['asn']))
 ]
 ix_ips = [
     {
         '归属': escape(i['name']),
-        '网段': f"`{str(IPy.IP(i['ip']))}`",
-        'RS': f"`{i['rs']['asn']}`<br>`{str(IPy.IP(i['rs']['ip']))}`" if 'rs' in i else 'N/A',
+        '网段': f'`{str(IPy.IP(i['ip']))}`',
+        'RS': f'`{i['rs']['asn']}`<br>`{str(IPy.IP(i['rs']['ip']))}`' if 'rs' in i else 'N/A',
     }
     for i in sorted(ix, key=lambda x: IP(x['ip']).int())
 ]

@@ -17,20 +17,28 @@
 同时，Generator 会自动生成各类标准文件，如：
 
 - Monitor ([主站](https://status.dn11.top/) / [备站](https://monitor.dn11.baimeow.cn/))
+
 - 信息表 ([GitHub](https://github.com/dn-11/metadata/blob/main/README.md))
+
 - ROA
+
   - Bird2 风格 ([GitHub](https://raw.githubusercontent.com/dn-11/metadata/main/dn11_roa_bird2.conf) / [Tencent COS](https://metadata.dn11.baimeow.cn/dn11_roa_bird2.conf))
-  - GoRTR 风格 ([GitHub](https://raw.githubusercontent.com/dn-11/metadata/main/dn11_roa_gortr.json) / [Tencent COS](https://metadata.dn11.baimeow.cn/dn11_roa_gortr.json))
+
+  - StayRTR 风格 ([GitHub](https://raw.githubusercontent.com/dn-11/metadata/main/dn11_roa_stayrtr.json) / [Tencent COS](https://metadata.dn11.baimeow.cn/dn11_roa_stayrtr.json))
+
 - Zone 文件
+
   - DN11 Zone ([GitHub](https://raw.githubusercontent.com/dn-11/metadata/main/dn11.zone) / [Tencent COS](https://metadata.dn11.baimeow.cn/dn11.zone))
+
   - rDNS Zone ([GitHub](https://raw.githubusercontent.com/dn-11/metadata/main/dn11-rdns.zone) / [Tencent COS](https://metadata.dn11.baimeow.cn/dn11-rdns.zone))
+
 - IP-Cidr 文件 ([GitHub](https://raw.githubusercontent.com/dn-11/metadata/main/dn11_ipcidr.txt) / [Tencent COS](https://metadata.dn11.baimeow.cn/dn11_ipcidr.txt))
 
 ## How
 
 ### 成员注册
 
-您仅需要在 `as` 目录中创建一个 YAML 文件，文件名为 `<your-asn>.yml`，然后以 [`example.yml`](https://github.com/dn-11/registry/blob/main/as/example.yml) 为模板填写。填写完成后提交一个 PR，根据 Checker 回复修改您的配置，然后等待管理员合并即可。
+您仅需要在 `as` 目录中创建一个 YAML 文件，文件名为 `<your-asn>.yml`，然后以 [`example.minimal.yml` (推荐的最小配置)](https://github.com/dn-11/registry/blob/main/as/example.minimal.yml) 为模板填写（对于新成员，不建议从 `example.full.yml` 开始。按需申请资源，不要“未雨绸缪”）。填写完成后提交一个 PR，根据 Checker 回复修改您的配置，然后等待管理员合并即可。
 
 - `ASN`
 
@@ -84,13 +92,15 @@
 
   每个 NS 记录对应一个 IP 地址。
 
-  请注意，注册域名是不一定需要注册 NS 记录。如您使用其他成员提供的 NS 服务器，则无需注册 NS 记录。
+  请注意，注册域名时不一定需要注册 NS 记录。如您使用其他成员提供的 NS 服务器，则无需注册 NS 记录。
 
 - `comment`
 
   **选填**
 
   备注信息。会在信息表等场合展示。
+
+    *这是非必要字段，无需为了填而填，可以为空。*
 
 - `monitor`
 

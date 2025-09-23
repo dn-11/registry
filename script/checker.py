@@ -5,10 +5,11 @@ import sys
 from math import log2
 from pathlib import Path
 
-import iplist
 import yaml
 from IPy import IP
 from netaddr import IPSet
+
+import iplist
 
 
 class log:
@@ -60,8 +61,10 @@ if str(path.parent) != 'as':
     log.error(f'修改了非 as 目录文件: `{new_file}`')
 elif path.suffix != '.yml':
     log.error(f'文件 `{new_file}` 非 yml 格式')
-elif path.stem == 'example':
-    log.warning('修改了 `example.yml` 文件')
+elif path.stem == 'example.minimal':
+    log.warning('修改了 `example.minimal.yml` 文件')
+elif path.stem == 'example.full':
+    log.warning('修改了 `example.full.yml` 文件')
 elif path.stem not in ['service', 'dns', 'ix']:
     with open('as/ix.yml', 'r', encoding='utf8') as f:
         data = yaml.load(f, Loader=yaml.Loader)
@@ -75,6 +78,8 @@ elif path.stem not in ['service', 'dns', 'ix']:
             log.warning('不建议申请 `AS4211111111`，该 ASN 容易造成输入和识别困难')
         elif asn == 4211110101:
             log.error('`AS4211110101` 已被 Route Collector 服务占用')
+        elif asn == 4211110102:
+            log.error('`AS4211110102` 已被 Route Collector 服务占用')
         elif asn in ixrs_asn:
             log.error(f'`AS{asn}` 已被 IX RS 占用')
     except ValueError:
@@ -157,15 +162,15 @@ if new_file == 'ix':
                     elif os.path.exists(f'{asn}.yml'):
                         log.error(f'RS ASN `{asn}` 已被用户申请')
                 except ValueError:
-                    log.error(f"RS ASN `{i['rs']['asn']}` 格式错误")
+                    log.error(f'RS ASN `{i['rs']['asn']}` 格式错误')
                 try:
                     rsip = IP(i['rs']['ip'])
                     if len(rsip) != 1:
-                        log.error(f"RS IP `{i['rs']['ip']}` 不为单 IP。对 RS 的申请必须是 /32")
+                        log.error(f'RS IP `{i['rs']['ip']}` 不为单 IP。对 RS 的申请必须是 /32')
                     elif rsip not in IP(i['ip']):
-                        log.error(f"RS IP `{i['rs']['ip']}` 不在该 IX IP 段内")
+                        log.error(f'RS IP `{i['rs']['ip']}` 不在该 IX IP 段内')
                 except ValueError:
-                    log.error(f"RS IP `{i['rs']['ip']}` 格式错误")
+                    log.error(f'RS IP `{i['rs']['ip']}` 格式错误')
     ips = [i['ip'] for i in data]
     if len(IPSet(ips).iter_cidrs()) != len(ips):
         log.error('定义的 IX IP 有重叠')
@@ -285,7 +290,7 @@ for domain in datas[new_file].get('domain', {}):
     visited = set()
     dup = [x for x in datas[new_file]['domain'][domain] if x in visited or (visited.add(x) or False)]
     if dup:
-        log.error(f'NS `{", ".join(set(dup))}` 重复定义')
+        log.error(f'NS {', '.join(f'`{i}`' for i in set(dup))} 重复定义')
 for ns in datas[new_file].get('ns', {}).keys():
     if not any(ns.endswith(i) for i in datas[new_file].get('domain', {})):
         log.error(f'NS 仅可由对应域名的持有者定义，您不持有 `{ns}`')
@@ -295,8 +300,6 @@ for ns in datas[new_file].get('domain', {}).values():
     for i in ns:
         if i.lower() not in existed_ns:
             log.error(f'NS `{i}` 未被定义')
-net172 = [int(str(IP(i))[:-3].split('.')[2]) for i in existed_ip if IP(i) in IP('172.16.0.0/16')]
-net172.sort()
 net172_new = set()
 for i in datas[new_file]['ip']:
     ip = IP(i)
@@ -313,14 +316,17 @@ for i in datas[new_file]['ip']:
     elif ip in IP('172.16.255.0/24'):
         log.error('服务段请在 `service.yml` 中申请')
     elif len(ip) != 256:
-        log.error(f'IP `{i}` 不持有一个 /24 段。对常规段的申请必须是 /24 段')
+        log.warning(f'IP `{i}` 不持有一个 /24 段。对常规段的申请一般应为 /24 段')
+        existed_ip.update({ip: None})
     else:
-        net172_new.add(int(str(ip)[:-3].split('.')[2]))
-net172 = set([i for i in range(1, 256) if i not in net172][: len(net172_new)])
-if net172_new != net172:
-    extra = [f'172.16.{i}.0/24' for i in net172_new - net172]
-    want = [f'172.16.{i}.0/24' for i in net172 - net172_new]
-    log.warning(f'对于申请的 `{", ".join(sorted(extra))}`，建议改为申请 `{", ".join(sorted(want))}`')
+        net172_new.update(i for i in range(1, 256) if IP(f'172.16.{i}.0/24') in ip)
+net172_available = [i for i in range(1, 256) if all(IP(f'172.16.{i}.0/24') not in j for j in existed_ip)]
+net172_available = set(net172_available[: len(net172_new)])
+if net172_new != net172_available:
+    extra = [f'172.16.{i}.0/24' for i in net172_new - net172_available]
+    want = [f'172.16.{i}.0/24' for i in net172_available - net172_new]
+    log.warning(f'对于申请的 {', '.join(f'`{i}`' for i in sorted(extra))}，'
+                f'建议改为申请 {', '.join(f'`{i}`' for i in sorted(want))}')
 if 'appendix' in datas[new_file].get('monitor', {}):
     try:
         json.loads('{' + datas[new_file]['monitor']['appendix'] + '}')

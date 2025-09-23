@@ -1,0 +1,6 @@
+name: CaPoo
+contact: "mail@capoo.me"
+ip:
+  - 172.16.73.0/24
+
+comment: HK CN2

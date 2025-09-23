@@ -1,0 +1,10 @@
+name: M1saK1
+contact: yodelmisaki@gmail.com
+ip:
+  - 172.16.74.0/24
+comment: HDU-10
+monitor:
+  custom_node: |
+    "itemStyle": {
+            "color": "#ff0033"
+        }
