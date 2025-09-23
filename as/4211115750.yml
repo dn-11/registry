@@ -2,6 +2,15 @@ name: tenonet
 contact: support@tenotek.com
 ip:
   - 172.16.39.0/24
+
+domain:
+  teno.dn11:
+    - ns.teno.dn11
+  39.16.172.in-addr.arpa:
+    - ns.teno.dn11
+ns:
+  ns.teno.dn11: 172.16.39.53
+  
 comment: 浙江杭州tenonet
 monitor:
   custom_node: |
