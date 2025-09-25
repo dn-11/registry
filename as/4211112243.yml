@@ -6,7 +6,7 @@ domain:
   ts.dn11:
     - ns1.ts.dn11
 ns:
-  ns1.ts.dn11: 172.16.3.53
+  ns1.ts.dn11: 172.16.3.54
 monitor:
   custom_node: |
     "itemStyle": {
