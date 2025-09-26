@@ -172,7 +172,7 @@ if new_file == 'ix':
                 except ValueError:
                     log.error(f'RS IP `{i['rs']['ip']}` 格式错误')
     ips = [i['ip'] for i in data]
-    if len(IPSet(ips)) != sum([len(IPSet([x])) for x in ips]):
+    if len(IPSet(ips)) != sum(len(IPSet([x])) for x in ips):
         log.error('定义的 IX IP 有重叠')
     asns = [i['rs']['asn'] for i in data if 'rs' in i]
     if len(asns) != len(set(asns)):
@@ -210,7 +210,7 @@ if 'ip' not in datas[new_file]:
     log.error('缺少 `ip` 字段')
 elif type(datas[new_file]['ip']) is not list:
     log.error('`ip` 字段必须为列表')
-elif len(IPSet(datas[new_file]['ip'])) != sum([len(IPSet([x])) for x in datas[new_file]['ip']]):
+elif len(IPSet(datas[new_file]['ip'])) != sum(len(IPSet([x])) for x in datas[new_file]['ip']):
     log.error('所申请 IP 有重叠')
 if 'name' not in datas[new_file]:
     log.error('缺少 `name` 字段')
@@ -301,6 +301,7 @@ for ns in datas[new_file].get('domain', {}).values():
         if i.lower() not in existed_ns:
             log.error(f'NS `{i}` 未被定义')
 net172_new = set()
+net172_more_than_one = ...
 for i in datas[new_file]['ip']:
     ip = IP(i)
     if any(ip in i for i in IX_IP):
@@ -318,8 +319,14 @@ for i in datas[new_file]['ip']:
     elif len(ip) != 256:
         log.warning(f'IP `{i}` 不持有一个 /24 段。对常规段的申请一般应为 /24 段')
         existed_ip.update({ip: None})
+        if len(ip) > 256:
+            net172_more_than_one = True
     else:
         net172_new.update(i for i in range(1, 256) if IP(f'172.16.{i}.0/24') in ip)
+        if net172_more_than_one is ...:
+            net172_more_than_one = False
+        elif net172_more_than_one is False:
+            net172_more_than_one = True
 net172_available = [i for i in range(1, 256) if all(IP(f'172.16.{i}.0/24') not in j for j in existed_ip)]
 net172_available = set(net172_available[: len(net172_new)])
 if net172_new != net172_available:
@@ -327,6 +334,8 @@ if net172_new != net172_available:
     want = [f'172.16.{i}.0/24' for i in net172_available - net172_new]
     log.warning(f'对于申请的 {', '.join(f'`{i}`' for i in sorted(extra))}，'
                 f'建议改为申请 {', '.join(f'`{i}`' for i in sorted(want))}')
+if net172_more_than_one is True:
+    log.warning('申请了多个 DN11 常规段资源')
 if 'appendix' in datas[new_file].get('monitor', {}):
     try:
         json.loads('{' + datas[new_file]['monitor']['appendix'] + '}')
