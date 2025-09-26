@@ -172,7 +172,7 @@ if new_file == 'ix':
                 except ValueError:
                     log.error(f'RS IP `{i['rs']['ip']}` 格式错误')
     ips = [i['ip'] for i in data]
-    if len(IPSet(ips).iter_cidrs()) != len(ips):
+    if len(IPSet(ips)) != sum([len(IPSet([x])) for x in ips]):
         log.error('定义的 IX IP 有重叠')
     asns = [i['rs']['asn'] for i in data if 'rs' in i]
     if len(asns) != len(set(asns)):
@@ -210,7 +210,7 @@ if 'ip' not in datas[new_file]:
     log.error('缺少 `ip` 字段')
 elif type(datas[new_file]['ip']) is not list:
     log.error('`ip` 字段必须为列表')
-elif len(IPSet(datas[new_file]['ip']).iter_cidrs()) != len(datas[new_file]['ip']):
+elif len(IPSet(datas[new_file]['ip'])) != sum([len(IPSet([x])) for x in datas[new_file]['ip']]):
     log.error('所申请 IP 有重叠')
 if 'name' not in datas[new_file]:
     log.error('缺少 `name` 字段')
