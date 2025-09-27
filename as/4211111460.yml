@@ -5,5 +5,7 @@ ip:
 domain:
   woshiluo.dn11:
     - ns1.woshiluo.dn11
+  20.16.172.in-addr.arpa:
+    - ns1.woshiluo.dn11
 ns:
   ns1.woshiluo.dn11:  172.16.20.53
