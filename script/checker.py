@@ -25,6 +25,9 @@ class log:
         self.has_warning = True
         print(f'⚠️ {msg}')
 
+    def info(self, msg):
+        print(f'ℹ️ {msg}')
+
     def exit(self):
         if self.has_error:
             print()
@@ -335,7 +338,7 @@ if net172_new != net172_available:
     log.warning(f'对于申请的 {', '.join(f'`{i}`' for i in sorted(extra))}，'
                 f'建议改为申请 {', '.join(f'`{i}`' for i in sorted(want))}')
 if net172_more_than_one is True:
-    log.warning('申请了多个 DN11 常规段资源')
+    log.info('申请了多个 DN11 常规段资源')
 if 'appendix' in datas[new_file].get('monitor', {}):
     try:
         json.loads('{' + datas[new_file]['monitor']['appendix'] + '}')
