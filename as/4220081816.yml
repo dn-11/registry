@@ -1,6 +1,7 @@
 name: Potat0
 contact: dn11@potat0.cc
 ip:
+  - 172.16.88.0/24
   - 10.18.0.0/16
   - 192.168.18.0/24
 domain:
