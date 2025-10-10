@@ -2,9 +2,6 @@ name: clstilmldy
 contact: "clstilmldy@gmail.com"
 ip:
   - 172.16.222.0/24
-domain:
-  clstilmldy.dn11:
-    - ns1.clstilmldy.dn11
 comment: HAIS, ICT, UCAS, HDU, HDUHELP
 monitor:
   custom_node: |
