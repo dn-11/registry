@@ -38,7 +38,17 @@
 
 ### 成员注册
 
-您仅需要在 `as` 目录中创建一个 YAML 文件，文件名为 `<your-asn>.yml`，然后以 [`example.minimal.yml` (推荐的最小配置)](https://github.com/dn-11/registry/blob/main/as/example.minimal.yml) 为模板填写（对于新成员，不建议从 `example.full.yml` 开始。按需申请资源，不要“未雨绸缪”）。填写完成后提交一个 PR，根据 Checker 回复修改您的配置，然后等待管理员合并即可。
+您仅需要在 `as` 目录中创建一个 YAML 文件，文件名为 `<your-asn>.yml`，然后以 [`example.minimal.yml` (推荐的最小配置)](https://github.com/dn-11/registry/blob/main/as/example.minimal.yml) 为模板填写（对于新成员，不建议从 `example.full.yml` 开始）。填写完成后提交一个 PR，根据 Checker 回复修改您的配置，然后等待管理员合并即可。
+
+> [!CAUTION]
+>
+> **按需申请资源，切勿“未雨绸缪”！**
+>
+> 只填写“必填”项就已足够完成申请。
+>
+> 仅在你**目前**就已经确实需要该资源时才填写“选填”项。不要申请“将来可能会用到”的资源。
+>
+> 过度申请资源会导致资源浪费，且极有可能会被管理员拒绝合并。
 
 - `ASN`
 
@@ -72,7 +82,7 @@
 
   您可在 [信息表](https://github.com/dn-11/metadata/blob/main/README.md) 中查看已使用的 IP 段和下一个建议使用的网段。
 
-  如您确需使用其他 IP，请在群中说明情况。
+  原则上，我们不接受使用自定义段及标准段内非最小可用地址，以方便管理和节约地址资源。如您确需使用其他 IP，请在群中说明情况。
 
 - `domain`
 
