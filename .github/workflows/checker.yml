@@ -28,12 +28,12 @@ jobs:
           git fetch raw
       - name: Get changed files
         id: changed-files
-        uses: tj-actions/changed-files@v40
+        uses: tj-actions/changed-files@v47
         with:
           base_sha: remotes/raw/main
       - name: Run Checker
         run: |
-          pip3 install pyyaml IPy netaddr
+          pip3 install pyyaml IPy netaddr requests
           python3 script/checker.py ${{steps.changed-files.outputs.all_changed_files}} > result.txt
       - name: Reply to PR
         uses: thollander/actions-comment-pull-request@v2

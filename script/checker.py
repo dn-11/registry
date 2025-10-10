@@ -5,11 +5,29 @@ import sys
 from math import log2
 from pathlib import Path
 
+import requests
 import yaml
 from IPy import IP
 from netaddr import IPSet
 
 import iplist
+
+new_apply = None
+
+
+def check_new_apply():
+    global new_apply
+    if new_apply is not None:
+        return new_apply
+    url = f"https://api.github.com/repos/dn-11/registry/contents/as/{new_file}.yml"
+    r = requests.get(url)
+    if r.status_code == 200:
+        new_apply = False
+    elif r.status_code == 404:
+        new_apply = True
+    else:
+        log.warning(f"无法访问 GitHub API，HTTP 状态码 {r.status_code}")
+    return new_apply
 
 
 class log:
@@ -220,6 +238,8 @@ if "name" not in datas[new_file]:
 elif type(datas[new_file]["name"]) is not str:
     log.error("`name` 字段必须为字符串")
 if "domain" in datas[new_file]:
+    if check_new_apply():
+        log.error("不允许新注册的 ASN 申请域名")
     if type(datas[new_file]["domain"]) is not dict:
         log.error("`domain` 字段必须为字典")
     else:
@@ -227,6 +247,8 @@ if "domain" in datas[new_file]:
             if type(ns_server) is not list:
                 log.error(f"域名 `{domain}` 的 NS 服务器设置不为列表")
 if "ns" in datas[new_file]:
+    if check_new_apply():
+        log.error("不允许新注册的 ASN 申请域名")
     if type(datas[new_file]["ns"]) is not dict:
         log.error("`ns` 字段必须为字典")
     else:
