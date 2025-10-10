@@ -1,0 +1,35 @@
+name: clstilmldy
+contact: "clstilmldy@gmail.com"
+ip:
+  - 172.16.222.0/24
+domain:
+  clstilmldy.dn11:
+    - ns1.clstilmldy.dn11
+ns:
+  - ns1.clstilmldy.dn11
+comment: HAIS, ICT, UCAS, HDU, HDUHELP
+monitor:
+  custom_node: |
+    "itemStyle": {
+        "color": {
+            "type": "radial",
+            "x": 0.6,
+            "y": 0.4,
+            "r": 0.8,
+            "colorStops": [
+                {
+                    "offset": 0.2,
+                    "color": "#FFF0F5"
+                },
+                {
+                    "offset": 1,
+                    "color": "#E6E6FA"
+                }
+            ]
+        },
+    "borderCap": "round",
+    "borderColor": "#E6E6FA",
+    "borderWidth": 0.2,
+    "shadowColor": "#D8BFD8",
+    "shadowBlur": 2
+    }
