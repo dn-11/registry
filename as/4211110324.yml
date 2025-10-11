@@ -2,7 +2,6 @@ name: m0nk1y
 contact: 2403803313@qq.com
 ip:
   - 172.16.42.0/24
-comment: 杭电生活区16号楼
 monitor:
   custom_node: |
     "itemStyle": {

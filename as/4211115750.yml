@@ -13,8 +13,7 @@ domain:
     - ns.teno.dn11
 ns:
   ns.teno.dn11: 172.16.39.53
-  
-comment: 浙江杭州tenonet
+
 monitor:
   custom_node: |
     "itemStyle": {

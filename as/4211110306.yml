@@ -2,7 +2,6 @@ name: hluvmiku
 contact: hluvmiku@gmail.com
 ip:
   - 172.16.30.0/24
-comment: HDU-10-306
 monitor:
   custom_node: |
     "itemStyle": {

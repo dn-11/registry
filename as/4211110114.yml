@@ -8,7 +8,6 @@ domain:
     - ns1.gs.dn11
 ns:
   ns1.gs.dn11: 172.16.7.53
-comment: 杭电生活区12号楼（雾）
 monitor:
   custom_node: |
     "itemStyle": {

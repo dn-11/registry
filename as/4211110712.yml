@@ -2,7 +2,6 @@ name: Moncak
 contact: yuebinjiang@qq.com
 ip:
   - 172.16.29.0/24
-comment: 杭电生活区16号楼
 monitor:
   custom_node: |
     "itemStyle": {

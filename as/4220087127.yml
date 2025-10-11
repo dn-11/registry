@@ -2,7 +2,6 @@ name: Kiracoon
 contact: kiramiby@gmail.com
 ip:
   - 172.16.62.0/24
-comment: Kira VPS 上海
 monitor:
   custom_node: |
     "itemStyle": {
