@@ -2,7 +2,7 @@ name: hakuya
 contact: "931290928"
 ip:
   - 100.64.0.0/24
-  - fd11:2008:1919::0/44
+  - fd11:2008:1919::0/48
 domain:
   hakuya.dn11:
     - ns1.hakuya.dn11
