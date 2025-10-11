@@ -7,7 +7,6 @@ domain:
     - ns1.daidr.dn11
 ns:
   ns1.daidr.dn11: 172.16.33.53
-comment: 杭电生活区11北2楼
 monitor:
   custom_node: |
     "itemStyle": {

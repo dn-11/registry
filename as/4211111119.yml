@@ -1,8 +1,7 @@
 name: bianmu
-contact: '2570772184'
+contact: 2570772184
 ip:
   - 172.16.55.0/24
-comment: Nobody cares
 monitor:
   custom_node: |
     "itemStyle": {

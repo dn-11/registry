@@ -2,7 +2,6 @@ name: Lemon
 contact: guanchenxiang@outlook.com
 ip:
   - 172.16.40.0/24
-comment: 杭电生活区16号楼
 monitor:
   custom_node: |
     "itemStyle": {

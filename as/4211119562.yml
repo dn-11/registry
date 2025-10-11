@@ -2,7 +2,6 @@ name: Raziel
 contact: "1278173058"
 ip:
   - 172.16.25.0/24
-comment: HDU 14号四楼~喵
 monitor:
   custom_node: |
     "itemStyle": {

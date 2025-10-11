@@ -2,7 +2,6 @@ name: LuoYing
 contact: luwy1dn11@gmail.com
 ip:
   - 172.16.22.0/24
-comment: 杭电生活区14号5楼
 monitor:
   custom_node: |
     "itemStyle": {
