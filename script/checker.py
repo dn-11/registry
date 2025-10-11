@@ -239,7 +239,7 @@ elif type(datas[new_file]["name"]) is not str:
     log.error("`name` 字段必须为字符串")
 if "domain" in datas[new_file]:
     if check_new_apply():
-        log.error("不允许新注册的 ASN 申请域名")
+        log.error("不允许新注册 ASN 时附带注册域名")
     if type(datas[new_file]["domain"]) is not dict:
         log.error("`domain` 字段必须为字典")
     else:
@@ -248,7 +248,7 @@ if "domain" in datas[new_file]:
                 log.error(f"域名 `{domain}` 的 NS 服务器设置不为列表")
 if "ns" in datas[new_file]:
     if check_new_apply():
-        log.error("不允许新注册的 ASN 申请域名")
+        log.error("不允许新注册 ASN 时附带注册 NS 记录")
     if type(datas[new_file]["ns"]) is not dict:
         log.error("`ns` 字段必须为字典")
     else:
