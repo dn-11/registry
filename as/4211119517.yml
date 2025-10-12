@@ -2,3 +2,19 @@ name: TQHYG
 contact: "1621553591"
 ip:
   - 172.16.80.0/24
+domain:
+  tqhyg.dn11:
+    - ns1.tqhyg.dn11
+ns:
+  ns1.tqhyg.dn11: 172.16.80.53
+
+monitor:
+  custom_node: |
+    "itemStyle": {
+        "color": "#000000",
+        "borderCap": "round",
+        "borderColor": "#B0C4DE",
+        "borderWidth": 2,
+        "shadowColor": "rgba(0, 0, 255, 0.5)",
+        "shadowBlur": 5
+    }
