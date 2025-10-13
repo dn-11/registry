@@ -1,0 +1,4 @@
+name: Hijack
+ip:
+  - 172.16.252.0/24
+comment: 用于 ROA 测试，注册的 IP 不宣告，劫持另外两个 IP 段。
