@@ -1,0 +1,11 @@
+name: sijimi
+contact: whois@wuzhiyuan.com
+ip:
+  - 172.16.92.0/24
+domain:
+  sijimi.dn11:
+    - ns1.sijimi.dn11
+  92.16.172.in-addr.arpa:
+    - ns1.sijimi.dn11
+ns:
+  ns1.sijimi.dn11: 172.16.92.1
