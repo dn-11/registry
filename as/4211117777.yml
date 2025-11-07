@@ -1,0 +1,4 @@
+name: RhineLab
+contact: noc@rhinelab.io
+ip:
+  - 172.16.93.0/24
