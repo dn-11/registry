@@ -191,7 +191,7 @@ with open("metadata/dn11_roa_bird2.conf", "a") as f:
         roa["metadata"]["valid"] += 1
         print(f"route {str(IP(ixrs_ip))} max 32 as {ixrs_asn};", file=f)
 
-roa = {"roas": [{"prefix": i["prefix"], "maxLength": i["maxLength"], "asn": int(i["asn"][2:])} for i in roa["roas"]]}
+roa = {"metadata": roa["metadata"], "roas": [{"prefix": i["prefix"], "maxLength": i["maxLength"], "asn": int(i["asn"][2:])} for i in roa["roas"]]}
 with open("metadata/dn11_roa_stayrtr.json", "w") as f:
     json.dump(roa, f, ensure_ascii=True, separators=(",", ":"))
 with open("metadata/dn11.zone", "r") as f:
