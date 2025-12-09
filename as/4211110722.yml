@@ -2,3 +2,8 @@ name: Macarons
 contact: "2712259702 & macarons1119@gmail.com"
 ip:
   - 172.16.77.0/24
+domain:
+  macarons.dn11:
+    - ns1.macarons.dn11
+ns:
+  ns1.macarons.dn11: 172.16.77.53
