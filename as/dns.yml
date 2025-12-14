@@ -14,3 +14,5 @@
   ip: 172.16.33.53
 - name: Macarons
   ip: 172.16.77.54
+- name: woshiluo
+  ip: 172.16.20.53
