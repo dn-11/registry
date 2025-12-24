@@ -5,7 +5,7 @@
 - name: Iraze
   ip: 172.16.2.13
 - name: Potat0
-  ip: 10.18.0.153
+  ip: 172.16.88.54
 - name: Hakuya
   ip: 100.64.0.1
 - name: BaiMeow
