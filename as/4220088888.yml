@@ -1,0 +1,4 @@
+name: AiNic
+contact: "dn11@ainic.ee"
+ip:
+  - 172.16.95.0/24
