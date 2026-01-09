@@ -1,12 +1,7 @@
 name: Ljcbaby
 contact: 46277145+ljcbaby@users.noreply.github.com
-
 ip:
   - 172.16.68.0/22
-
-comment: |
-  Ljcbaby's Network
-
 monitor:
   custom_node: |
     "itemStyle": {

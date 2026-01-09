@@ -2,7 +2,6 @@ name: buttercat
 contact: 397233276@qq.com
 ip:
   - 172.16.76.0/24
-comment: 10北
 monitor:
   custom_node: |
     "itemStyle": {

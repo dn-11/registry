@@ -5,7 +5,7 @@ ip:
   - 172.16.14.0/24
 domain:
   baimeow.dn11:
-#    - ns1.baimeow.dn11
+    - ns1.baimeow.dn11
     - ns2.baimeow.dn11
   acme.dn11:
     - ns1.potat0.dn11
@@ -14,7 +14,7 @@ domain:
   14.16.172.in-addr.arpa:
     - ns2.baimeow.dn11
 ns:
-#  ns1.baimeow.dn11: 172.16.7.53
+  ns1.baimeow.dn11: 172.16.4.66
   ns2.baimeow.dn11: 172.16.4.6
 monitor:
   custom_node: |

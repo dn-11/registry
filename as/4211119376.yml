@@ -2,7 +2,6 @@ name: "0xa7973908"
 contact: maximwang110@gmail.com
 ip:
   - 172.16.81.0/24
-comment: Minhang District, Shanghai, P.R.China
 monitor:
   custom_node: |
     "itemStyle": {

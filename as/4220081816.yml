@@ -1,6 +1,7 @@
 name: Potat0
 contact: dn11@potat0.cc
 ip:
+  - 172.16.88.0/24
   - 10.18.0.0/16
   - 192.168.18.0/24
 domain:
@@ -9,7 +10,7 @@ domain:
   18.10.in-addr.arpa:
     - ns1.potat0.dn11
 ns:
-  ns1.potat0.dn11: 10.18.0.53
+  ns1.potat0.dn11: 172.16.88.53
 monitor:
   custom_node: |
     "itemStyle": {

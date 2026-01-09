@@ -11,7 +11,7 @@ domain:
     - ns1.potat0.dn11
 ns:
   ns1.potat0.dn11: 10.18.0.53
-comment: bla bla
+comment: Only something really important, or just leave it blank.
 monitor:
   appendix: |
     bla bla

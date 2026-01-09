@@ -4,7 +4,6 @@ ip:
   - 172.16.49.0/24
 domain:
   douzza.dn11:
-    - ns1.douzza.dn11   
+    - ns1.douzza.dn11
 ns:
   ns1.douzza.dn11: 172.16.49.1
-comment: 16-523

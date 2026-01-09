@@ -8,7 +8,6 @@ domain:
     - ns1.potat0.dn11
   uptime.dn11:
     - ns1.potat0.dn11
-comment: 浙江省金华市
 monitor:
   custom_node: |
     "itemStyle": {
