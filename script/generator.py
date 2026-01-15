@@ -84,7 +84,8 @@ with open("metadata/dn11.zone", "w") as f:
         "$ORIGIN .\n"
         "dn11                    300     IN      SOA     "
         f"root.dn11 hostmaster.dn11 {old_dn11_zone_serial} 60 60 604800 60\n"
-        "dn11                    300     IN      NS      172.16.255.53",
+        "dn11                    300     IN      NS      ns1.nic.dn11\n"
+        "ns1.nic.dn11            300     IN      A       172.16.255.53",
         file=f,
     )
 with open("metadata.old/dn11-rdns.zone", "r") as f:
@@ -100,7 +101,7 @@ with open("metadata/dn11-rdns.zone", "w") as f:
         "$ORIGIN .\n"
         "in-addr.arpa                    300     IN      SOA     "
         f"root.dn11 hostmaster.dn11 {old_rdns_zone_serial} 60 60 604800 60\n"
-        "in-addr.arpa                    300     IN      NS      172.16.255.53",
+        "in-addr.arpa                    300     IN      NS      ns1.nic.dn11",
         file=f,
     )
 with open("metadata/dn11_roa_bird2.conf", "w") as f:
