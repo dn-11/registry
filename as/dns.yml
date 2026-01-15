@@ -16,3 +16,5 @@
   ip: 172.16.77.54
 - name: woshiluo
   ip: 172.16.20.53
+- name: Mantle
+  ip: 172.16.23.233
