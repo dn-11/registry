@@ -4,9 +4,11 @@ ip:
   - 172.16.80.0/24
 domain:
   tqhyg.dn11:
-    - ns1.tqhyg.dn11
+    - ns.tqhyg.dn11
+  80.16.172.in-addr.arpa:
+    - ns.tqhyg.dn11
 ns:
-  ns1.tqhyg.dn11: 172.16.80.53
+  ns.tqhyg.dn11: 172.16.80.53
 
 monitor:
   custom_node: |
@@ -18,3 +20,4 @@ monitor:
         "shadowColor": "rgba(0, 0, 255, 0.5)",
         "shadowBlur": 5
     }
+
