@@ -9,6 +9,8 @@ domain:
     - ns1.potat0.dn11
   18.10.in-addr.arpa:
     - ns1.potat0.dn11
+  88.16.172.in-addr.arpa:
+    - ns1.potat0.dn11
 ns:
   ns1.potat0.dn11: 172.16.88.53
 monitor:
