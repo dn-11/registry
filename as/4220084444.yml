@@ -6,16 +6,14 @@ ip:
 domain:
   baimeow.dn11:
     - ns1.baimeow.dn11
-    - ns2.baimeow.dn11
   acme.dn11:
     - ns1.potat0.dn11
   4.16.172.in-addr.arpa:
-    - ns2.baimeow.dn11
+    - ns1.baimeow.dn11
   14.16.172.in-addr.arpa:
-    - ns2.baimeow.dn11
+    - ns1.baimeow.dn11
 ns:
   ns1.baimeow.dn11: 172.16.4.66
-  ns2.baimeow.dn11: 172.16.4.6
 monitor:
   custom_node: |
     "itemStyle": {
