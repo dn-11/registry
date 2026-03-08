@@ -5,6 +5,8 @@ ip:
 domain:
   mantle.dn11:
     - ns1.mantle.dn11
+  23.16.172.in-addr.arpa:
+    - ns1.mantle.dn11
 ns:
   ns1.mantle.dn11: 172.16.23.233
 monitor:
