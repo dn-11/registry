@@ -14,6 +14,7 @@ domain:
     - ns1.baimeow.dn11
 ns:
   ns1.baimeow.dn11: 172.16.4.66
+auth: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK5PIqd/dlOtvOqiBCIO11IWhm/f5/hOrn7pKVPio/e/"
 monitor:
   custom_node: |
     "itemStyle": {
