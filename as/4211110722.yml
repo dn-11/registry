@@ -7,4 +7,6 @@ domain:
     - ns1.macarons.dn11
 ns:
   ns1.macarons.dn11: 172.16.77.53
-auth: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICw0xwL7uTtW/IIUIuCSvFh6OanF2+qPjmvjPUVVnDuK"
+auth: 
+  -"ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICw0xwL7uTtW/IIUIuCSvFh6OanF2+qPjmvjPUVVnDuK"
+  -"ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIdknn9zRXimdykMUEEYOJOdvTAjr8k5wyjEMX/58c1p"
