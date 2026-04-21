@@ -9,6 +9,8 @@ domain:
     - ns1.mantle.dn11
 ns:
   ns1.mantle.dn11: 172.16.23.233
+auth:
+  - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDbddXZW+vgiRzQBEh3DeGWaeb2hY1L9tCNckLmPvvyE -
 monitor:
   custom_node: |
     "itemStyle": {
