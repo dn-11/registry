@@ -1,7 +1,7 @@
 name: Checker
 
 on:
-  pull_request_target:
+  pull_request:
     branches:
       - main
 
@@ -15,7 +15,7 @@ jobs:
       - name: Setup Python Environment
         uses: actions/setup-python@main
         with:
-          python-version: "3.13"
+          python-version: "3.14"
       - name: Checkout Code
         uses: actions/checkout@main
         with:
@@ -36,7 +36,7 @@ jobs:
           pip3 install pyyaml IPy netaddr requests
           python3 script/checker.py ${{steps.changed-files.outputs.all_changed_files}} > result.txt
       - name: Reply to PR
-        uses: thollander/actions-comment-pull-request@v2
+        uses: mshick/add-pr-comment@v3
         if: always()
         with:
-          filePath: result.txt
+          message-path: result.txt
