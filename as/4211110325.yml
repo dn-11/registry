@@ -2,3 +2,5 @@ name: Kimmy
 contact: kimmyxyc@gmail.com
 ip:
   - 172.16.84.0/24
+auth:
+  - "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHOyr6Zg205YqY5v6YkBxS+f/O7lfNMrSk3nj0QpRAiy"
