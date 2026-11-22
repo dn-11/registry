@@ -2,3 +2,8 @@ name: AlaIc
 contact: "2742518001"
 ip:
   - 172.16.100.0/24
+domain:
+  alaic.dn11:
+    - ns1.alaic.dn11
+ns:
+  ns1.alaic.dn11: 172.16.100.53
