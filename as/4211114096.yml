@@ -5,6 +5,8 @@ ip:
 domain:
   daidr.dn11:
     - ns1.daidr.dn11
+  33.16.172.in-addr.arpa:
+    - ns1.daidr.dn11
 ns:
   ns1.daidr.dn11: 172.16.33.53
 monitor:
